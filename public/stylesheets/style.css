@@ -6,3 +6,25 @@ body {
 a {
   color: #00B7FF;
 }
+
+body {
+  background: navy;
+}
+
+#page {
+  width: 6.5in;
+  height: 9in;
+  background: white;
+  margin: auto;
+  padding: 1in;
+  line-height: 0px;
+}
+
+.block {
+  border: 2px dotted lightblue;
+  margin: auto;
+}
+
+.current {
+  border: 2px solid blue;
+}
