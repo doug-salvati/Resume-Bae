@@ -71,6 +71,12 @@ class Resume {
 
     /* Remove a block from the page */
     delete_block(row, column) {
+        /* Make sure there's more than one */
+        if ($('.block').length == 1) {
+            alert("You can't delete the last block");
+            return;
+        }
+
         /* Give width to another block */
         if (column > 0) {
             this.rows[row][column - 1].width += this.rows[row][column].width;
@@ -79,10 +85,12 @@ class Resume {
         }
 
         /* Remove block from array */
+        var deleted_height = this.rows[row][column].height;
         this.rows[row].splice(column, 1);
 
         /* If the row is empty, delete it */
-        if (this.rows[row].length == 1) {
+        if (this.rows[row].length == 0) {
+            this.available_height += deleted_height;
             this.rows.splice(row, 1);
         }
     }
@@ -135,6 +143,7 @@ function initialize() {
     });
     $("#delete").click(function(){
         my_resume.delete_block(selection[0], selection[1]);
+        selection = [0,0];
         my_resume.drawPage(selection);
     });
 
