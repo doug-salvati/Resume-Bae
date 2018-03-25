@@ -9,23 +9,27 @@ html
     link(href='stylesheets/style.css', rel='stylesheet')
 
   body.
-    <h1> Résumé Bae Editor </h1>
-    <button id="add_vertical" name="addv">
-      <i class="fas fa-plus"></i> V
-    </button>
+    <div id="header">
+      <a href=".."><img id="logo" src='img/rbicon.png'/></a>
+      <span id="add_vertical" class="header_btn" name="addv">
+        <i class="fas fa-2x fa-plus"></i> V
+      </span>
 
-    <button id="add_horizontal" name="addh">
-      <i class="fas fa-plus"></i> H
-    </button>
+      <span id="add_horizontal" class="header_btn" name="addh">
+        <i class="fas fa-2x fa-plus"></i> H
+      </span>
 
-    <i class="fas fa-angle-down"></i>
+      <span id="class_dropdown" class="header_btn">
+        <i class="fas fa-2x fa-angle-down"></i>
+      </span>
 
-    <button id="delete" name="delete">
-      <i class="fas fa-trash"></i>
-    </button>
+      <span id="delete" class="header_btn" name="delete">
+        <i class="fas fa-2x fa-trash"></i>
+      </span>
 
-    <i class="fas fa-dot-circle"></i>
-    <i class="fas fa-minus"></i>
-    <i class="fas fa-dollar-sign"></i>
+      <span id="bullets" class="header_btn"><i class="fas fa-2x fa-dot-circle"></i></span>
+      <span id="lines" class="header_btn"><i class="fas fa-2x fa-minus"></i></span>
+      <span id="symbols" class="header_btn"><i class="fas fa-2x fa-dollar-sign"></i></span>
+    </div>
 
     <div id="page"></div>
