@@ -1,6 +1,8 @@
 var ppi = 96;
 var max_rows = 42;
 var max_cols = 5;
+var drag_options = {revert: "invalid", revertDuration: 200, zIndex: 999};
+var drop_options = {accept: ".blockwrapper", drop: triggerMove};
 
 class Block {
     constructor(height, width) {
@@ -26,17 +28,20 @@ class Resume {
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 var block = $('<textarea class="block">' + this.rows[i][j].contents + '</textarea>');
-                if (i == selection[0] && j == selection[1]) {
-                    block.addClass("current");
-                }
                 block.data("row", i).data("column", j);
                 block.click(changeSelection);
                 block.change(textChanged);
-                block.css("height", this.rows[i][j].height);
-                block.css("width", this.rows[i][j].width - 8);
+                block.css("height", this.rows[i][j].height - 10);
+                block.css("width", this.rows[i][j].width - 18);
                 $("#page").append(block);
+                block.wrap('<span class="blockwrapper"></span>');
+                if (i == selection[0] && j == selection[1]) {
+                    block.parent().addClass("current");
+                }
             }
         }
+        $('.blockwrapper').draggable(drag_options);
+        $('.blockwrapper').droppable(drop_options);
     }
 
     /* Add a block to the page at the bottom*/
@@ -96,8 +101,22 @@ class Resume {
     }
 
     /* Change position of block in the document */
-    move() {
+    move(old_location, new_location) {
+        var missing_width = this.rows[old_location[0]][old_location[1]].width;
 
+        let tmp;
+        if (old_location[0] == new_location[0]) {
+            tmp = this.rows[old_location[0]][old_location[1]];
+            this.rows[old_location[0]][old_location[1]] = this.rows[new_location[0]][new_location[1]];
+            this.rows[new_location[0]][new_location[1]] = tmp;
+        } else {
+            tmp = this.rows[old_location[0]][old_location[1]]; // Get the element that's moving
+            this.rows[old_location[0]].splice(old_location[1], 1); // Delete it
+            tmp.width = this.max_width;
+            this.rows[new_location[0]].splice(new_location[1], 0, tmp); // Place it in the new row
+            this.rows[old_location[0]][this.rows[old_location[0]].length - 1].width += missing_width; // Fill freed space
+            
+        }
     }
 
     /* Resize a block, affecting the blocks around it */
@@ -124,14 +143,13 @@ class Resume {
             this.rows[row][column].width += width_change;
         }
     }
-
 }
 /* Init the resume element and the event handlers for the buttons */
 function initialize() {
     my_resume = new Resume();
     selection = [0,0] /* Row, column */
     my_resume.drawPage(selection);
-    $(".block").addClass("current");
+    $(".blockwrapper").addClass("current");
 
     $("#add_vertical").click(function() {
         my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1);
@@ -162,13 +180,25 @@ function initialize() {
 function changeSelection() {
     selection = [$(this).data("row"), $(this).data("column")];
     $(".current").removeClass("current");
-    $(this).addClass("current");
+    $(this).parent().addClass("current");
 }
 
 function textChanged() {
     text = $(this).val();
     block = my_resume.rows[$(this).data("row")][$(this).data("column")];
     block.contents = text;
+}
+
+function triggerMove(event, ui) {
+    var drop_row = $(this).children().first().data("row");
+    var drop_col = $(this).children().first().data("column");
+    var drag_row = $(ui.draggable).children().first().data("row");
+    var drag_col = $(ui.draggable).children().first().data("column");
+    var drop = [drop_row, drop_col];
+    var drag = [drag_row, drag_col];
+    my_resume.move(drag, drop);
+    selection = drop;
+    my_resume.drawPage(selection);
 }
 
 $(document).ready(initialize);

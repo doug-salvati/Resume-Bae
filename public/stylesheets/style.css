@@ -44,10 +44,20 @@ body {
 }
 
 .block {
-  border: 2px dotted lightblue;
   margin: auto;
+  border: none;
+  outline: none;
+  font-size: 12pt;
 }
 
-.current {
+.blockwrapper {
+  background: white;
+  cursor: move;
+  display: inline-block;
+  border: 2px dotted lightblue;
+  padding: 5px;
+}
+
+.current, span {
   border: 2px solid blue;
 }
