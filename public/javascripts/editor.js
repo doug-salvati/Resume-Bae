@@ -1,8 +1,15 @@
 var ppi = 96;
 var max_rows = 42;
 var max_cols = 5;
-var drag_options = {revert: "invalid", revertDuration: 200, zIndex: 999};
+function revert_handler(valid) {
+    my_resume.drawPage(selection);
+    return valid;
+}
+var drag_options = {revert: revert_handler, revertDuration: 200, zIndex: 999};
 var drop_options = {accept: ".blockwrapper", drop: triggerMove};
+var draggingr = -1;
+var draggingc = -1;
+var dragstart = 0;
 
 class Block {
     constructor(height, width) {
@@ -41,6 +48,32 @@ class Resume {
             }
         }
         $('.blockwrapper').draggable(drag_options);
+        $('.blockwrapper').mousedown(function(event) {
+            dragstart = event.pageY;
+            draggingr = $(this).children().first().data("row");
+            draggingc = $(this).children().first().data("column");
+        });
+        var max = this.max_width;
+        $('.blockwrapper').mousemove(function(event) {
+            var row = $(this).children().first().data("row");
+            var col = $(this).children().first().data("column");
+            if (row == draggingr && col == draggingc) {
+                var delta = event.pageY - dragstart;
+                if (draggingr >= 0 && Math.abs(delta) > 25) {
+                    var row_before = $('.blockwrapper').filter(function() {
+                        return ($(this).children().first().data("row") == draggingr) &&
+                               ($(this).children().first().data("column") < draggingc);
+                    });
+                    var row_after = $('.blockwrapper').filter(function() {
+                        return ($(this).children().first().data("row") == draggingr) &&
+                               ($(this).children().first().data("column") > draggingc);
+                    });
+                    $(this).prepend(row_before).children().css("border", "none");
+                    $(this).append(row_after).children().css("border", "none");
+                }
+            }
+        });
+        $('.blockwrapper').mouseup(function() {draggingr = -1;});
         $('.blockwrapper').droppable(drop_options);
     }
 
@@ -102,6 +135,8 @@ class Resume {
 
     /* Change position of block in the document */
     move(old_location, new_location) {
+        console.log(old_location);
+        console.log(new_location);
         var missing_width = this.rows[old_location[0]][old_location[1]].width;
 
         let tmp;
@@ -110,12 +145,9 @@ class Resume {
             this.rows[old_location[0]][old_location[1]] = this.rows[new_location[0]][new_location[1]];
             this.rows[new_location[0]][new_location[1]] = tmp;
         } else {
-            tmp = this.rows[old_location[0]][old_location[1]]; // Get the element that's moving
-            this.rows[old_location[0]].splice(old_location[1], 1); // Delete it
-            tmp.width = this.max_width;
-            this.rows[new_location[0]].splice(new_location[1], 0, tmp); // Place it in the new row
-            this.rows[old_location[0]][this.rows[old_location[0]].length - 1].width += missing_width; // Fill freed space
-            
+            tmp = this.rows[old_location[0]];
+            this.rows[old_location[0]] = this.rows[new_location[0]];
+            this.rows[new_location[0]] = tmp;
         }
     }
 
@@ -197,7 +229,14 @@ function triggerMove(event, ui) {
     var drop = [drop_row, drop_col];
     var drag = [drag_row, drag_col];
     my_resume.move(drag, drop);
-    selection = drop;
+    if (drop_row == drag_row) {
+        selection[1] = drop[1];
+    }
+    else if (selection[0] == drop[0]) {
+        selection[0] = drag[0];
+    } else {
+        selection[0] = drop[0];
+    }
     my_resume.drawPage(selection);
 }
 
