@@ -1,15 +1,23 @@
-var ppi = 96;
-var max_rows = 42;
-var max_cols = 5;
+// Some constants and variables needed globally
+const ppi = 96;
+const max_rows = 42;
+const max_cols = 5;
+// When a drag has reverted, we need to redraw to undo the
+//    drag styling that was applied
 function revert_handler(valid) {
-    my_resume.drawPage(selection);
+    my_resume.drawPage(selection); // my_resume defined on page initialization
     return valid;
 }
-var drag_options = {revert: revert_handler, revertDuration: 200, zIndex: 999};
-var drop_options = {accept: ".blockwrapper", drop: triggerMove};
+// Settings for jQuery drag and drop
+const drag_options = {revert: revert_handler, zIndex: 999};
+const drop_options = {accept: ".blockwrapper", drop: triggerMove};
+// Which block is currently being dragged?
 var draggingr = -1;
 var draggingc = -1;
+// Stores Y-point of drag beginning to calculate change in position
+//    while moving
 var dragstart = 0;
+// Save the last row that was dragged for later use
 var lastdragr = -1;
 
 class Block {
@@ -42,38 +50,52 @@ class Resume {
                 block.css("height", this.rows[i][j].height - 10);
                 block.css("width", this.rows[i][j].width - 18);
                 $("#page").append(block);
+                // Wrap it to enable resizing and moving
                 block.wrap('<span class="blockwrapper"></span>');
                 if (i == selection[0] && j == selection[1]) {
                     block.parent().addClass("current");
                 }
             }
         }
-        $('.blockwrapper').draggable(drag_options);
+        // These handlers track the motion of a dragged block
+        // If a block is dragged at least halfway out of its row,
+        //    the whole row joins it to swap rows 
+        $('.blockwrapper').draggable(drag_options);  // Makes element click-and-drag
+        // Store which element is being dragged and where the drag began
         $('.blockwrapper').mousedown(function(event) {
             dragstart = event.pageY;
             draggingr = $(this).children().first().data("row");
             draggingc = $(this).children().first().data("column");
         });
+        // Some values we need in the mousemove handler
         var max = this.max_width;
+        var half_height = this.rows[selection[0]][selection[1]].height / 2;
+        // Movement tracking
         $('.blockwrapper').mousemove(function(event) {
+            // Get row and column
             var row = $(this).children().first().data("row");
             var col = $(this).children().first().data("column");
+            // Make sure this is the handler for the currently dragged block
             if (row == draggingr && col == draggingc) {
+                // Check if block has been dragged vertically
                 var delta = event.pageY - dragstart;
-                if (draggingr >= 0 && Math.abs(delta) > 25) {
-                    var row_before = $('.blockwrapper').filter(function() {
+                if (draggingr >= 0 && Math.abs(delta) > half_height) {
+                    // Attach the rest of the row to the current dragged element
+                    //    for visual clarity since user is trying to swap rows
+                    var cols_before = $('.blockwrapper').filter(function() {
                         return ($(this).children().first().data("row") == draggingr) &&
                                ($(this).children().first().data("column") < draggingc);
                     });
-                    var row_after = $('.blockwrapper').filter(function() {
+                    var cols_after = $('.blockwrapper').filter(function() {
                         return ($(this).children().first().data("row") == draggingr) &&
                                ($(this).children().first().data("column") > draggingc);
                     });
-                    $(this).prepend(row_before).children().css("border", "none");
-                    $(this).append(row_after).children().css("border", "none");
+                    $(this).prepend(cols_before).children().css("border", "none");
+                    $(this).append(cols_after).children().css("border", "none");
                 }
             }
         });
+        // Reset dragging info when the action is completed
         $('.blockwrapper').mouseup(function() {lastdragr = draggingr; draggingr = -1;});
         $('.blockwrapper').droppable(drop_options);
     }
@@ -136,16 +158,16 @@ class Resume {
 
     /* Change position of block in the document */
     move(old_location, new_location) {
-        console.log(old_location);
-        console.log(new_location);
-        var missing_width = this.rows[old_location[0]][old_location[1]].width;
-
         let tmp;
+        // Move within a row
         if (old_location[0] == new_location[0]) {
+            // Swap their indices
             tmp = this.rows[old_location[0]][old_location[1]];
             this.rows[old_location[0]][old_location[1]] = this.rows[new_location[0]][new_location[1]];
             this.rows[new_location[0]][new_location[1]] = tmp;
+        // Move across rows
         } else {
+            // Swap the entire rows
             tmp = this.rows[old_location[0]];
             this.rows[old_location[0]] = this.rows[new_location[0]];
             this.rows[new_location[0]] = tmp;
@@ -222,6 +244,8 @@ function textChanged() {
     block.contents = text;
 }
 
+// On a drop event, this callback is triggered to adjust the resume
+//    object and re-draw
 function triggerMove(event, ui) {
     var drop_row = $(this).children().first().data("row");
     var drop_col = $(this).children().first().data("column");
