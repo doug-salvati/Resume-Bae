@@ -10,6 +10,7 @@ var drop_options = {accept: ".blockwrapper", drop: triggerMove};
 var draggingr = -1;
 var draggingc = -1;
 var dragstart = 0;
+var lastdragr = -1;
 
 class Block {
     constructor(height, width) {
@@ -36,7 +37,7 @@ class Resume {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 var block = $('<textarea class="block">' + this.rows[i][j].contents + '</textarea>');
                 block.data("row", i).data("column", j);
-                block.click(changeSelection);
+                block.mousedown(changeSelection);
                 block.change(textChanged);
                 block.css("height", this.rows[i][j].height - 10);
                 block.css("width", this.rows[i][j].width - 18);
@@ -73,7 +74,7 @@ class Resume {
                 }
             }
         });
-        $('.blockwrapper').mouseup(function() {draggingr = -1;});
+        $('.blockwrapper').mouseup(function() {lastdragr = draggingr; draggingr = -1;});
         $('.blockwrapper').droppable(drop_options);
     }
 
@@ -224,8 +225,8 @@ function textChanged() {
 function triggerMove(event, ui) {
     var drop_row = $(this).children().first().data("row");
     var drop_col = $(this).children().first().data("column");
-    var drag_row = $(ui.draggable).children().first().data("row");
-    var drag_col = $(ui.draggable).children().first().data("column");
+    var drag_row = lastdragr;
+    var drag_col = draggingc;
     var drop = [drop_row, drop_col];
     var drag = [drag_row, drag_col];
     my_resume.move(drag, drop);
