@@ -9,6 +9,7 @@ class Block {
         this.height = height;
         this.width = width;
         this.contents = "";
+	this.isLine = false; // denotes whether the block is a line or not
     }
 }
 
@@ -17,9 +18,12 @@ class Resume {
         this.max_height = 9 * ppi;
         this.max_width = 6.5 * ppi;
         this.default_block_height = this.max_height / 4;
+        this.default_line_height = 6; //height for horiz., width for vert. line block
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
         this.rows = [[new Block(this.default_block_height, this.max_width)]];
+	this.selected_block = [0, 0]; //Currently selected block (X, Y)
+	this.line_style = 'solid';
     }
 
     /* Draw a row */
@@ -27,7 +31,14 @@ class Resume {
         $("#page").html("");
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
-                var block = $('<textarea class="block">' + this.rows[i][j].contents + '</textarea>');
+                if(this.rows[i][j].isLine == false){
+                    var block = $('<textarea class="block">' + this.rows[i][j].contents + '</textarea>');
+                    block.css("border", "none"); //moved here to deal with line
+	        }
+                else{
+                    var block = $('<textarea class="line">' + this.rows[i][j].contents + '</textarea>');
+                    block.css("border", "3px " + this.line_style + " black"); //moved here to deal with line 
+                }
                 block.data("row", i).data("column", j);
                 block.click(changeSelection);
                 block.change(textChanged);
@@ -36,7 +47,7 @@ class Resume {
                 $("#page").append(block);
                 block.wrap('<span class="blockwrapper"></span>');
                 if (i == selection[0] && j == selection[1]) {
-                    block.parent().addClass("current");
+                  block.parent().addClass("current");
                 }
             }
         }
@@ -123,7 +134,9 @@ class Resume {
     resize_vertical(row, height_change) {
         
         if(height_change > this.available_height){
-            alert("Not enough leg room to stretch block");
+            alert("Not enough leg room to stretch block"); 
+	    //the way it is currently written, will give error but not stop resize
+	    return;
         }else{
             for(var i = 0; i < this.rows[row].length; i++) {
                 this.rows[row][i].height += height_change;
@@ -137,16 +150,52 @@ class Resume {
             return;
         if(width_change > this.rows[row][column+1].width - minimum_block_width) {
             alert("horizontal resize cannot be larger than next block");
+	    //the way it is currently written, will give error but not stop resize
             return;
         } else {
             this.rows[row][column+1].width -= width_change;
             this.rows[row][column].width += width_change;
         }
     }
+
+    change_line_style(new_style){
+      this.line_style = new_style
+    }
+
+    add_line_horizontal(row){ //adds a new horizontal line in vertical block
+      if (this.available_height <= 0 || this.available_height < this.default_block_height) {
+        alert("No room to add a line");
+        return;
+      }
+
+      var height = this.default_line_height;
+
+      this.available_height -= height;
+
+      this.rows.splice(row + 1, 0, [new Block(height, this.max_width)]);
+    }
+
+    add_line_vertical(row) { //adds a new vertical line in a horizontal block
+        if (this.rows[row].length >= max_cols) {
+            alert("No room to add a block");
+            return;
+        }
+        var height = Math.floor(this.rows[row][0].height);
+        var width = default_line_height;
+        this.rows[row][this.rows[row].length - 1].width -= width;
+        this.rows[row].push(new Block(height, width));
+    }
+
+    change_line_style(new_style){
+      this.line_style = new_style;
+    }
+
 }
 /* Init the resume element and the event handlers for the buttons */
 function initialize() {
     my_resume = new Resume();
+    var isDragging = false; //flag for whether or not the mouse is being dragged
+
     selection = [0,0] /* Row, column */
     my_resume.drawPage(selection);
     $(".blockwrapper").addClass("current");
@@ -168,13 +217,69 @@ function initialize() {
     /*$("#resize_vertical")/* drag event / (function(){
         var press; //y coord on mouse press
         var release; //y coord on mouse release
-        myResume.resize_vertical(my_resume.rows[ROW].length, (release - press))
+        myResume.resize_vertical($(this).data("row"), (release - press))
     })
     $("#resize_horizontal")/* drag event / (function(){
         var press; //y coord on mouse press
         var release; //y coord on mouse release
-        myResume.resize_horizontal(my_resume.rows[ROW].length, (release - press))
+        myResume.resize_horizontal($(this).data("row"), (release - press))
     })*/
+
+    /*$("a").mousedown(function(){
+	isDragging = false;
+    })
+    .mousemove(function(){
+	isDragging = true;
+    })
+    .mouseup(function(){
+	var drag = isDragging;
+	isDragging = false;
+    });*/
+
+    $("#resize").ready(function(){
+      var $textareas = jQuery('textarea');
+
+      $textareas.data('x', $textareas.outerWidth());
+      $textareas.data('y', $textareas.outerHeight());
+
+      $textareas.mouseup(function(){
+        var $this = jQuery(this);
+        var changeX, changeY;
+
+        if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
+          changeX = $this.data('x') - $this.outerWidth();
+          changeY = $this.data('x') - $this.outerHeight();
+
+          myResume.resize_horizontal(selection[0], selection[1] changeX);
+          myResume.resize_vertical($(selection[0], changeY);
+          $this.data('x', $this.outerWidth());
+          $this.data('y', $this.outerHeight());			
+        }
+        else if($this.outerWidth() != $this.data('x')){
+          changeX = $this.data('x') - $this.outerWidth(); //May need to be swapped
+          myResume.resize_horizontal(selection[0], selection[1] changeX);
+          $this.data('x', $this.outerWidth());
+        }
+        else if($this.outerHeight() != $this.data('y')){
+          changeY = $this.data('x') - $this.outerHeight(); //may need to be swapped
+          myResume.resize_vertical($(selection[0], changeY);
+          $this.data('y', $this.outerHeight());	
+        }
+    });
+
+    $("#add_vertical_line").click(function() {
+        my_resume.add_line_vertical(my_resume.rows[selection[0]].length + 1);
+        my_resume.drawPage(selection);
+    });  
+    $("#add_horizontal_line").click(function(){
+        my_resume.add_line_horizontal(selection[0]);
+        my_resume.drawPage(selection);
+    });
+
+    $("#change_line_style").change(function(){
+        //my_resume.change_line_style(ELEMENT_IN_DROP_DOWN);
+    });
+
 }
 
 function changeSelection() {

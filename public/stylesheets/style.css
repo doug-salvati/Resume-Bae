@@ -45,9 +45,16 @@ body {
 
 .block {
   margin: auto;
-  border: none;
+  /*border: none;*/
   outline: none;
   font-size: 12pt;
+}
+
+.line {
+  margin: auto;
+  outline: 2px; /* can be resized if necessary*/
+  font-size: 12pt;
+  resize: none;
 }
 
 .blockwrapper {
