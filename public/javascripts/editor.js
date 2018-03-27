@@ -5,11 +5,11 @@ var drag_options = {revert: "invalid", revertDuration: 200, zIndex: 999};
 var drop_options = {accept: ".blockwrapper", drop: triggerMove};
 
 class Block {
-    constructor(height, width) {
+    constructor(height, width, isLine) {
         this.height = height;
         this.width = width;
         this.contents = "";
-	this.isLine = false; // denotes whether the block is a line or not
+	this.isLine = isLine; // denotes whether the block is a line or not
     }
 }
 
@@ -21,7 +21,7 @@ class Resume {
         this.default_line_height = 6; //height for horiz., width for vert. line block
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
-        this.rows = [[new Block(this.default_block_height, this.max_width)]];
+        this.rows = [[new Block(this.default_block_height, this.max_width, false)]];
 	this.selected_block = [0, 0]; //Currently selected block (X, Y)
 	this.line_style = 'solid';
     }
@@ -36,7 +36,7 @@ class Resume {
                     block.css("border", "none"); //moved here to deal with line
 	        }
                 else{
-                    var block = $('<textarea class="line">' + this.rows[i][j].contents + '</textarea>');
+                    var block = $('<textarea class="line"></textarea>');
                     block.css("border", "3px " + this.line_style + " black"); //moved here to deal with line 
                 }
                 block.data("row", i).data("column", j);
@@ -70,7 +70,7 @@ class Resume {
 
         this.available_height -= height;
 
-        this.rows.splice(row + 1, 0, [new Block(height, this.max_width)]);
+        this.rows.splice(row + 1, 0, [new Block(height, this.max_width, false)]);
     }
 
     /* Add a block to the page at the end of the current road*/
@@ -82,7 +82,7 @@ class Resume {
         var height = Math.floor(this.rows[row][0].height);
         var width = Math.floor(this.rows[row][this.rows[row].length - 1].width / 2);
         this.rows[row][this.rows[row].length - 1].width -= width;
-        this.rows[row].push(new Block(height, width));
+        this.rows[row].push(new Block(height, width, false));
     }
 
     /* Remove a block from the page */
@@ -172,7 +172,8 @@ class Resume {
 
       this.available_height -= height;
 
-      this.rows.splice(row + 1, 0, [new Block(height, this.max_width)]);
+      this.rows.splice(row + 1, 0, [new Block(height, this.max_width, true)]);
+
     }
 
     add_line_vertical(row) { //adds a new vertical line in a horizontal block
@@ -183,7 +184,7 @@ class Resume {
         var height = Math.floor(this.rows[row][0].height);
         var width = default_line_height;
         this.rows[row][this.rows[row].length - 1].width -= width;
-        this.rows[row].push(new Block(height, width));
+        this.rows[row].push(new Block(height, width, true));
     }
 
     change_line_style(new_style){
@@ -225,7 +226,7 @@ function initialize() {
         myResume.resize_horizontal($(this).data("row"), (release - press))
     })*/
 
-    /*$("a").mousedown(function(){
+    $("a").mousedown(function(){
 	isDragging = false;
     })
     .mousemove(function(){
@@ -234,7 +235,7 @@ function initialize() {
     .mouseup(function(){
 	var drag = isDragging;
 	isDragging = false;
-    });*/
+    });
 
     $("#resize").ready(function(){
       var $textareas = jQuery('textarea');
@@ -250,29 +251,30 @@ function initialize() {
           changeX = $this.data('x') - $this.outerWidth();
           changeY = $this.data('x') - $this.outerHeight();
 
-          myResume.resize_horizontal(selection[0], selection[1] changeX);
-          myResume.resize_vertical($(selection[0], changeY);
+          myResume.resize_horizontal(selection[0], selection[1], changeX);
+          myResume.resize_vertical(selection[0], changeY);
           $this.data('x', $this.outerWidth());
           $this.data('y', $this.outerHeight());			
         }
         else if($this.outerWidth() != $this.data('x')){
           changeX = $this.data('x') - $this.outerWidth(); //May need to be swapped
-          myResume.resize_horizontal(selection[0], selection[1] changeX);
+          myResume.resize_horizontal(selection[0], selection[1], changeX);
           $this.data('x', $this.outerWidth());
         }
         else if($this.outerHeight() != $this.data('y')){
           changeY = $this.data('x') - $this.outerHeight(); //may need to be swapped
-          myResume.resize_vertical($(selection[0], changeY);
-          $this.data('y', $this.outerHeight());	
+          myResume.resize_vertical(selection[0], changeY);
+          $this.data('y', $this.outerHeight());
         }
+      });
     });
 
-    $("#add_vertical_line").click(function() {
-        my_resume.add_line_vertical(my_resume.rows[selection[0]].length + 1);
+    $("#add_line_vertical").click(function() {
+        my_resume.add_line_vertical(selection[0]);
         my_resume.drawPage(selection);
     });  
-    $("#add_horizontal_line").click(function(){
-        my_resume.add_line_horizontal(selection[0]);
+    $("#add_line_horizontal").click(function(){
+        my_resume.add_line_horizontal(my_resume.rows[selection[0]].length + 1);
         my_resume.drawPage(selection);
     });
 
