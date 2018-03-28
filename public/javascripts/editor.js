@@ -2,6 +2,7 @@
 const ppi = 96;
 const max_rows = 42;
 const max_cols = 5;
+        //var toggle = 0;
 // When a drag has reverted, we need to redraw to undo the
 //    drag styling that was applied
 function revert_handler(valid) {
@@ -168,6 +169,13 @@ class Resume {
         }
     }
 
+    /*add bullets to every newline */
+    bullets(row, column) {
+
+
+
+    }
+
     /* Change position of block in the document */
     move(old_location, new_location) {
         let tmp;
@@ -185,6 +193,7 @@ class Resume {
             this.rows[new_location[0]] = tmp;
         }
     }
+
 
     /* Resize a block, affecting the blocks around it */
     resize_vertical(row, height_change) {
@@ -301,6 +310,44 @@ function initialize() {
         my_resume.drawPage(selection);
     });
 
+    // Bullets
+    $("#bullets").click(function() {
+
+
+        //if(toggle == 0) {
+        
+            var text = my_resume.rows[selection[0]][selection[1]].contents;
+            my_resume.rows[selection[0]][selection[1]].contents = text.replace(/^/g, "\u2022").replace(/\n/g,"\n\u2022");
+            my_resume.drawPage(selection);
+
+            var linestart = function(text, bull) {
+            var line_length = text.split("\n");
+            var i = line_length.length-1;
+            line_length[i] = line_length[i]+'\n'+bull;
+            return line_length.join("\n");
+            };
+
+            $('textarea').on('keydown', function(e) {
+            var t = $(this);
+            if(e.which == 13) {
+            t.val(linestart(t.val(), '\u2022'));
+            return false;
+            }  
+            //toggle = 1;
+        //} else {
+            //toggle = 0;
+        //}
+  });
+
+
+
+    });
+
+
+
+
+
+
     /*$("#resize_vertical")/* drag event / (function(){
         var press; //y coord on mouse press
         var release; //y coord on mouse release
@@ -404,3 +451,4 @@ function triggerMove(event, ui) {
 }
 
 $(document).ready(initialize);
+
