@@ -20,6 +20,9 @@ var dragstart = 0;
 // Save the last row that was dragged for later use
 var lastdragr = -1;
 
+//handler for my_resume
+var glob_resume;
+
 class Block {
     constructor(height, width, isLine) {
         this.height = height;
@@ -30,7 +33,7 @@ class Block {
 }
 
 class Resume {
-    constructor() {
+    constructor() { //perhaps add an available width that can be given to last block in row
         this.max_height = 9 * ppi;
         this.max_width = 6.5 * ppi;
         this.default_block_height = this.max_height / 4;
@@ -109,6 +112,7 @@ class Resume {
         // Reset dragging info when the action is completed
         $('.blockwrapper').mouseup(function() {lastdragr = draggingr; draggingr = -1;});
         $('.blockwrapper').droppable(drop_options);
+	getTextareas(this);
     }
 
     /* Add a block to the page at the bottom*/
@@ -136,7 +140,7 @@ class Resume {
             return;
         }
         var height = Math.floor(this.rows[row][0].height);
-        var width = Math.floor(this.rows[row][this.rows[row].length - 1].width / 2);
+        var width = Math.floor(this.rows[row][this.rows[row].length - 1].width / 2); /*this is shaving off width*/
         this.rows[row][this.rows[row].length - 1].width -= width;
         this.rows[row].push(new Block(height, width, false));
     }
@@ -194,22 +198,27 @@ class Resume {
 	    return;
         }else{
             for(var i = 0; i < this.rows[row].length; i++) {
-                this.rows[row][i].height += height_change;
+                    this.rows[row][i].height += height_change;
             }
+        this.drawPage(selection);
         }
     }
 
     resize_horizontal(row, column, width_change) {
-
-        if(this.rows[row].length == column + 1)
+        if(this.rows[row].length == column + 1){
+            this.rows[row][0].width = this.max_width;
+            this.drawPage(selection);
             return;
-        if(width_change > this.rows[row][column+1].width - minimum_block_width) {
+	}
+        if(width_change > this.rows[row][(column+1)].width - this.minimum_block_width) {
             alert("horizontal resize cannot be larger than next block");
 	    //the way it is currently written, will give error but not stop resize
+            this.drawPage(selection);
             return;
         } else {
-            this.rows[row][column+1].width -= width_change;
+            this.rows[row][(column+1)].width -= width_change;
             this.rows[row][column].width += width_change;
+            this.drawPage(selection);
         }
     }
 
@@ -218,7 +227,7 @@ class Resume {
     }
 
     add_line_horizontal(row){ //adds a new horizontal line in vertical block
-      if (this.available_height <= 0 || this.available_height < this.default_block_height) {
+      if (this.available_height <= 0 || this.available_height < this.default_line_height) {
         alert("No room to add a line");
         return;
       }
@@ -237,7 +246,7 @@ class Resume {
             return;
         }
         var height = Math.floor(this.rows[row][0].height);
-        var width = default_line_height;
+        var width = this.default_line_height;
         this.rows[row][this.rows[row].length - 1].width -= width;
         this.rows[row].push(new Block(height, width, true));
     }
@@ -247,10 +256,13 @@ class Resume {
     }
 
 }
+
 /* Init the resume element and the event handlers for the buttons */
 function initialize() {
     my_resume = new Resume();
     var isDragging = false; //flag for whether or not the mouse is being dragged
+
+    glob_resume = my_resume;
 
     selection = [0,0] /* Row, column */
     my_resume.drawPage(selection);
@@ -270,17 +282,6 @@ function initialize() {
         my_resume.drawPage(selection);
     });
 
-    /*$("#resize_vertical")/* drag event / (function(){
-        var press; //y coord on mouse press
-        var release; //y coord on mouse release
-        myResume.resize_vertical($(this).data("row"), (release - press))
-    })
-    $("#resize_horizontal")/* drag event / (function(){
-        var press; //y coord on mouse press
-        var release; //y coord on mouse release
-        myResume.resize_horizontal($(this).data("row"), (release - press))
-    })*/
-
     $("a").mousedown(function(){
 	isDragging = false;
     })
@@ -292,38 +293,6 @@ function initialize() {
 	isDragging = false;
     });
 
-    $("#resize").ready(function(){
-      var $textareas = jQuery('textarea');
-
-      $textareas.data('x', $textareas.outerWidth());
-      $textareas.data('y', $textareas.outerHeight());
-
-      $textareas.mouseup(function(){
-        var $this = jQuery(this);
-        var changeX, changeY;
-
-        if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
-          changeX = $this.data('x') - $this.outerWidth();
-          changeY = $this.data('x') - $this.outerHeight();
-
-          myResume.resize_horizontal(selection[0], selection[1], changeX);
-          myResume.resize_vertical(selection[0], changeY);
-          $this.data('x', $this.outerWidth());
-          $this.data('y', $this.outerHeight());			
-        }
-        else if($this.outerWidth() != $this.data('x')){
-          changeX = $this.data('x') - $this.outerWidth(); //May need to be swapped
-          myResume.resize_horizontal(selection[0], selection[1], changeX);
-          $this.data('x', $this.outerWidth());
-        }
-        else if($this.outerHeight() != $this.data('y')){
-          changeY = $this.data('x') - $this.outerHeight(); //may need to be swapped
-          myResume.resize_vertical(selection[0], changeY);
-          $this.data('y', $this.outerHeight());
-        }
-      });
-    });
-
     $("#add_line_vertical").click(function() {
         my_resume.add_line_vertical(selection[0]);
         my_resume.drawPage(selection);
@@ -333,7 +302,8 @@ function initialize() {
         my_resume.drawPage(selection);
     });
 
-    $("#change_line_style").change(function(){
+    //NOT IMPLEMENTED YET
+    $("#change_line_style").change(function(){ 
         //my_resume.change_line_style(ELEMENT_IN_DROP_DOWN);
     });
 
@@ -371,5 +341,39 @@ function triggerMove(event, ui) {
     }
     my_resume.drawPage(selection);
 }
+
+function getTextareas(my_resume){
+        var $textareas = jQuery('textarea'); 
+
+      $textareas.data('x', $textareas.outerWidth());
+      $textareas.data('y', $textareas.outerHeight());
+
+      $textareas.mouseup(function(textArea){
+        var $this = jQuery(this);
+        var changeX, changeY;
+	var my_resume = glob_resume;
+
+        if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
+          changeX = $this.outerWidth() - $this.data('x');
+          changeY = $this.outerHeight() - $this.data('y');
+
+          my_resume.resize_vertical(selection[0], changeY);
+          my_resume.resize_horizontal(selection[0], selection[1], changeX); //drawpage after this
+          $this.data('x', $this.outerWidth());
+          $this.data('y', $this.outerHeight());			
+        }
+        else if($this.outerWidth() != $this.data('x')){
+          changeX = $this.outerWidth() - $this.data('x');
+
+          my_resume.resize_horizontal(selection[0], selection[1], changeX);
+          $this.data('x', $this.outerWidth());
+        }
+        else if($this.outerHeight() != $this.data('y')){
+          changeY = $this.outerHeight() - $this.data('y');
+
+          my_resume.resize_vertical(selection[0], changeY);
+          $this.data('y', $this.outerHeight());
+        }
+      });}
 
 $(document).ready(initialize);

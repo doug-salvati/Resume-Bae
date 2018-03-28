@@ -52,7 +52,7 @@ body {
 
 .line {
   margin: auto;
-  outline: 0px; /* can be resized if necessary*/
+  outline: none; /* can be resized if necessary*/
   font-size: 12pt;
   resize: none;
 }
