@@ -26,12 +26,9 @@ body {
   margin: 0 10px 0 10px;
 }
 
-.header_btn :hover {
-  color: lightgray;
-}
-
 #logo {
   height: 30px;
+  margin: 0px 20px 0px 20px;
 }
 
 #page {
@@ -65,6 +62,91 @@ body {
   padding: 5px;
 }
 
-.current, span {
+.current {
   border: 2px solid blue;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipmsg {
+  visibility: hidden;
+  position: absolute;
+  z-index: 999;
+  padding: 5px;
+  color: black;
+  background: white;
+  opacity: 0;
+  width: 0;
+  transition: opacity 0.25s, width 0.1s;
+  border-radius: 5px;
+  top: 150%;
+  left: -10%;
+  text-align: center;
+}
+
+.tooltip:hover .tooltipmsg {
+  visibility: visible;
+  opacity: .75;
+  width: 4em;
+  transition: opacity 0.5s, width 0.15s;
+}
+
+.tooltip:hover {
+  border-radius: 5px;
+  background: gray;
+  background: linear-gradient(white, gray);
+}
+
+.toolgroup {
+  position: relative;
+  padding: 6px;
+  margin-right: 10px;
+  background: gray;
+  background: linear-gradient(white, gray);
+}
+
+#newclass {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  width: 40%;
+  left: 30%;
+  top: 10%;
+  background: white;
+  border-radius: 15px;
+  text-align: center;
+  padding: 15px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5), 0 1px 20px 0 rgba(0, 0, 0, 0.25);
+}
+
+#existing_class {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  top: 75%;
+  left: 50px;
+  width: 200px;
+  text-align: center;
+  background: white;
+  border-radius: 0 0 2px 2px;
+  text-align: left;
+  padding: 15px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5), 0 1px 20px 0 rgba(0, 0, 0, 0.25);
+}
+
+#classes_listing {
+  list-style-type: none;
+}
+
+#classes_listing > li:hover {
+  background: lightgray;
+  cursor: pointer;
+}
+
+li:before {
+  content: "+";
+  margin-right: 10px;
 }

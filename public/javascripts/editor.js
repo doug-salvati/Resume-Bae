@@ -2,6 +2,7 @@
 const ppi = 96;
 const max_rows = 42;
 const max_cols = 5;
+        //var toggle = 0;
 // When a drag has reverted, we need to redraw to undo the
 //    drag styling that was applied
 function revert_handler(valid) {
@@ -24,11 +25,12 @@ var lastdragr = -1;
 var glob_resume;
 
 class Block {
-    constructor(height, width, isLine) {
+    constructor(height, width, isLine, classname = "none") {
         this.height = height;
         this.width = width;
         this.contents = "";
-	this.isLine = isLine; // denotes whether the block is a line or not
+        this.isLine = isLine; // denotes whether the block is a line or not
+        this.class = classname;
     }
 }
 
@@ -116,7 +118,7 @@ class Resume {
     }
 
     /* Add a block to the page at the bottom*/
-    add_block_vertical(row) {
+    add_block_vertical(row, classname = "none") {
         if (this.available_height <= 0) {
             alert("No room to add a block");
             return;
@@ -130,11 +132,11 @@ class Resume {
 
         this.available_height -= height;
 
-        this.rows.splice(row + 1, 0, [new Block(height, this.max_width, false)]);
+        this.rows.splice(row + 1, 0, [new Block(height, this.max_width, false, classname)]);
     }
 
     /* Add a block to the page at the end of the current road*/
-    add_block_horizontal(row) {
+    add_block_horizontal(row, classname = "none") {
         if (this.rows[row].length >= max_cols) {
             alert("No room to add a block");
             return;
@@ -142,7 +144,7 @@ class Resume {
         var height = Math.floor(this.rows[row][0].height);
         var width = Math.floor(this.rows[row][this.rows[row].length - 1].width / 2); /*this is shaving off width*/
         this.rows[row][this.rows[row].length - 1].width -= width;
-        this.rows[row].push(new Block(height, width, false));
+        this.rows[row].push(new Block(height, width, false, classname));
     }
 
     /* Remove a block from the page */
@@ -171,6 +173,13 @@ class Resume {
         }
     }
 
+    /*add bullets to every newline */
+    bullets(row, column) {
+
+
+
+    }
+
     /* Change position of block in the document */
     move(old_location, new_location) {
         let tmp;
@@ -188,6 +197,7 @@ class Resume {
             this.rows[new_location[0]] = tmp;
         }
     }
+
 
     /* Resize a block, affecting the blocks around it */
     resize_vertical(row, height_change) {
@@ -263,23 +273,84 @@ function initialize() {
     var isDragging = false; //flag for whether or not the mouse is being dragged
 
     glob_resume = my_resume;
+    var classeslist = ["", "none"];
 
     selection = [0,0] /* Row, column */
     my_resume.drawPage(selection);
     $(".blockwrapper").addClass("current");
 
-    $("#add_vertical").click(function() {
-        my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1);
-        my_resume.drawPage(selection);
-    });  
-    $("#add_horizontal").click(function(){
-        my_resume.add_block_horizontal(selection[0]);
-        my_resume.drawPage(selection);
+    // Add a blank class dialog
+    $("#add_blank").click(function(){$("#newclass").toggle();});
+    $("#newclass_close").click(function(){$("#newclass").hide();});
+    $("#newclass").draggable();
+    $("#newclass_create").click(function() {
+        $("#newclass").hide();
+        var direction = $("input[name=newclass_row]:checked").val();
+        var classname = $("#newclass_name").val();
+        if (direction == "vertical") {
+            my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+            my_resume.drawPage(selection);
+        } else {
+            my_resume.add_block_horizontal(selection[0], classname);
+            my_resume.drawPage(selection);
+        }
+        if (!(classeslist.includes(classname))) {
+            classeslist.push(classname);
+            $("#classes_listing").append("<li>" + classname + "</ul>");
+        }
     });
+    // Add an existing class dropdown
+    $("#class_dropdown, #existing_class").hover(function(){$("#existing_class").toggle();});
+    $("#classes_listing>li").click(function() {
+        var classname = $(this).text();
+        if (classname == "No Class") class_choice = "none";
+        var direction = $("input[name=existing_class_row]:checked").val();
+        if (direction == "vertical") {
+            my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+            my_resume.drawPage(selection);
+        } else {
+            my_resume.add_block_horizontal(selection[0], classname);
+            my_resume.drawPage(selection);
+        }
+    });
+
+    // Delete
     $("#delete").click(function(){
         my_resume.delete_block(selection[0], selection[1]);
         selection = [0,0];
         my_resume.drawPage(selection);
+    });
+
+<<<<<<< HEAD
+=======
+    // Bullets
+    $("#bullets").click(function() {
+
+
+        //if(toggle == 0) {
+        
+            var text = my_resume.rows[selection[0]][selection[1]].contents;
+            my_resume.rows[selection[0]][selection[1]].contents = text.replace(/^/g, "\u2022").replace(/\n/g,"\n\u2022");
+            my_resume.drawPage(selection);
+
+            var linestart = function(text, bull) {
+            var line_length = text.split("\n");
+            var i = line_length.length-1;
+            line_length[i] = line_length[i]+'\n'+bull;
+            return line_length.join("\n");
+            };
+
+            $('textarea').on('keydown', function(e) {
+            var t = $(this);
+            if(e.which == 13) {
+            t.val(linestart(t.val(), '\u2022'));
+            return false;
+            }  
+            //toggle = 1;
+        //} else {
+            //toggle = 0;
+        //}
+        });
     });
 
     $("a").mousedown(function(){
@@ -377,3 +448,4 @@ function getTextareas(my_resume){
       });}
 
 $(document).ready(initialize);
+

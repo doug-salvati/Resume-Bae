@@ -12,33 +12,75 @@ html
   body.
     <div id="header">
       <a href=".."><img id="logo" src='img/rbicon.png'/></a>
-      <span id="add_vertical" class="header_btn" name="addv">
-        <i class="fas fa-2x fa-plus"></i> V
+
+      <span class="toolgroup">
+        <span class="tooltip">
+          <span id="add_blank" class="header_btn">
+            <i class="fas fa-2x fa-plus"></i>
+          </span>
+          <span class="tooltipmsg">Blank Class</span>
+        </span>
+
+        <span id="class_dropdown" class="header_btn">
+          <i class="fas fa-2x fa-angle-down"></i>
+        </span>
+        <!-- Dropdown for choosing an existing class -->
+        <div id="existing_class">
+          <b>Existing Classes</b>
+          <hr/>
+          <input type="radio" name="existing_class_row" value="horizontal" checked> This row <br/>
+          <input type="radio" name="existing_class_row" value="vertical"> Bottom <br/>
+          <hr/>
+          Choose Class to Add
+          <ul id="classes_listing">
+            <li>No Class</li>
+          </ul>
+        </div>
+      </span>
+      <span class="tooltip">
+        <span id="delete" class="header_btn" name="delete">
+          <i class="fas fa-2x fa-trash"></i>
+        </span>
+        <span class="tooltipmsg">Delete</span>
       </span>
 
-      <span id="add_horizontal" class="header_btn" name="addh">
-        <i class="fas fa-2x fa-plus"></i> H
+      <span class="tooltip">
+        <span id="bullets" class="header_btn">
+          <i class="fas fa-2x fa-dot-circle"></i>
+        </span>
+        <span class="tooltipmsg">Bullets</span>
       </span>
 
-      <span id="class_dropdown" class="header_btn">
-        <i class="fas fa-2x fa-angle-down"></i>
+      <span class="tooltip">
+        <span id="add_line_vertical" class="header_btn" name="addlv">
+          <i class="fas fa-2x fa-minus"></i> V
+        </span>
+        <span class="tooltipmsg">Line</span>
       </span>
 
-      <span id="delete" class="header_btn" name="delete">
-        <i class="fas fa-2x fa-trash"></i>
+      <span class="tooltip">
+        <span id="add_line_horizontal" class="header_btn" name="addlh">
+          <i class="fas fa-2x fa-minus"></i> H
+        </span>
+        <span class="tooltipmsg">Line</span>
       </span>
 
-      <span id="bullets" class="header_btn"><i class="fas fa-2x fa-dot-circle"></i></span>
-
-      <span id="add_line_vertical" class="header_btn" name="addlv">
-        <i class="fas fa-2x fa-minus"></i> V
+      <span class="tooltip">
+        <span id="symbols" class="header_btn">
+          <i class="fas fa-2x fa-dollar-sign"></i>
+        </span>
+        <span class="tooltipmsg">Symbols</span>
       </span>
+    </div>
 
-      <span id="add_line_horizontal" class="header_btn" name="addlh">
-        <i class="fas fa-2x fa-minus"></i> H
-      </span>
-
-      <span id="symbols" class="header_btn"><i class="fas fa-2x fa-dollar-sign"></i></span>
+    <!-- Pop-up for adding a new blank class -->
+    <div id="newclass">
+      <h1>New Class!</h1>
+      Class name: <input type='text' id="newclass_name"></input><br/><br/>
+      <input type="radio" name="newclass_row" value="horizontal" checked> This row 
+      <input type="radio" name="newclass_row" value="vertical"> Bottom <br/><br/>
+      <button id="newclass_close">Close</button>
+      <button id="newclass_create">Create</button>
     </div>
 
     <div id="page"></div>
