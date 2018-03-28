@@ -321,8 +321,6 @@ function initialize() {
         my_resume.drawPage(selection);
     });
 
-<<<<<<< HEAD
-=======
     // Bullets
     $("#bullets").click(function() {
 
@@ -352,7 +350,7 @@ function initialize() {
         //}
         });
     });
-
+//////////
     $("a").mousedown(function(){
 	isDragging = false;
     })
