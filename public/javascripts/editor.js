@@ -170,13 +170,6 @@ class Resume {
         }
     }
 
-    /*add bullets to every newline */
-    bullets(row, column) {
-
-
-
-    }
-
     /* Change position of block in the document */
     move(old_location, new_location) {
         let tmp;
@@ -409,13 +402,14 @@ function triggerMove(event, ui) {
 function getTextareas(my_resume){
       var $textareas = jQuery('textarea'); 
 
-      $textareas.data('x', $textareas.outerWidth());
-      $textareas.data('y', $textareas.outerHeight());
+      $textareas.each(function(){
+        $(this).data('x', $(this).outerWidth());
+        $(this).data('y', $(this).outerHeight());
+      });
 
       $textareas.mouseup(function(textArea){
         var $this = jQuery(this);
         var changeX, changeY;
-
         if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
           changeX = $this.outerWidth() - $this.data('x');
           changeY = $this.outerHeight() - $this.data('y');
@@ -423,7 +417,7 @@ function getTextareas(my_resume){
           my_resume.resize_vertical(selection[0], changeY);
           my_resume.resize_horizontal(selection[0], selection[1], changeX); //drawpage after this
           $this.data('x', $this.outerWidth());
-          $this.data('y', $this.outerHeight());			
+          $this.data('y', $this.outerHeight());
         }
         else if($this.outerWidth() != $this.data('x')){
           changeX = $this.outerWidth() - $this.data('x');
