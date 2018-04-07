@@ -21,9 +21,6 @@ var dragstart = 0;
 // Save the last row that was dragged for later use
 var lastdragr = -1;
 
-//handler for my_resume
-var glob_resume;
-
 class Block {
     constructor(height, width, isLine, classname = "none") {
         this.height = height;
@@ -204,8 +201,8 @@ class Resume {
         
         if(height_change > this.available_height){
             alert("Not enough leg room to stretch block"); 
-	    //the way it is currently written, will give error but not stop resize
-	    return;
+	        //the way it is currently written, will give error but not stop resize
+	        return;
         }else{
             for(var i = 0; i < this.rows[row].length; i++) {
                     this.rows[row][i].height += height_change;
@@ -222,8 +219,8 @@ class Resume {
 	}
         if(width_change > this.rows[row][(column+1)].width - this.minimum_block_width) {
             alert("horizontal resize cannot be larger than next block");
-	    //the way it is currently written, will give error but not stop resize
-            this.drawPage(selection);
+	            //the way it is currently written, will give error but not stop resize
+                this.drawPage(selection);
             return;
         } else {
             this.rows[row][(column+1)].width -= width_change;
@@ -271,8 +268,6 @@ class Resume {
 function initialize() {
     my_resume = new Resume();
     var isDragging = false; //flag for whether or not the mouse is being dragged
-
-    glob_resume = my_resume;
     var classeslist = ["", "none"];
 
     selection = [0,0] /* Row, column */
@@ -350,7 +345,7 @@ function initialize() {
         //}
         });
     });
-//////////
+
     $("a").mousedown(function(){
 	isDragging = false;
     })
@@ -412,7 +407,7 @@ function triggerMove(event, ui) {
 }
 
 function getTextareas(my_resume){
-        var $textareas = jQuery('textarea'); 
+      var $textareas = jQuery('textarea'); 
 
       $textareas.data('x', $textareas.outerWidth());
       $textareas.data('y', $textareas.outerHeight());
@@ -420,7 +415,6 @@ function getTextareas(my_resume){
       $textareas.mouseup(function(textArea){
         var $this = jQuery(this);
         var changeX, changeY;
-	var my_resume = glob_resume;
 
         if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
           changeX = $this.outerWidth() - $this.data('x');
@@ -446,4 +440,3 @@ function getTextareas(my_resume){
       });}
 
 $(document).ready(initialize);
-
