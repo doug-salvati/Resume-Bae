@@ -17,6 +17,11 @@ body {
   background: white;
   padding: 5px;
   margin-bottom: 50px;
+  position: fixed;
+  width: 100vw;
+  z-index: 1000;
+  border-bottom: 5px solid navy;
+  top: 0;
 }
 
 .header_btn {
@@ -24,6 +29,7 @@ body {
   background: none;
   border: none;
   margin: 0 10px 0 10px;
+  z-index: -1;
 }
 
 #logo {
@@ -35,7 +41,7 @@ body {
   width: 6.5in;
   height: 9in;
   background: white;
-  margin: auto;
+  margin: 55px auto 50px;
   padding: 1in;
   line-height: 0px;
 }

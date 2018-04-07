@@ -20,6 +20,8 @@ var draggingc = -1;
 var dragstart = 0;
 // Save the last row that was dragged for later use
 var lastdragr = -1;
+//flag for when new selected block is chosen
+var new_selection = false;
 
 class Block {
     constructor(height, width, isLine, classname = "none") {
@@ -130,6 +132,7 @@ class Resume {
         this.available_height -= height;
 
         this.rows.splice(row + 1, 0, [new Block(height, this.max_width, false, classname)]);
+	getTextareas(this);
     }
 
     /* Add a block to the page at the end of the current road*/
@@ -142,6 +145,7 @@ class Resume {
         var width = Math.floor(this.rows[row][this.rows[row].length - 1].width / 2); /*this is shaving off width*/
         this.rows[row][this.rows[row].length - 1].width -= width;
         this.rows[row].push(new Block(height, width, false, classname));
+	getTextareas(this);
     }
 
     /* Remove a block from the page */
@@ -207,22 +211,43 @@ class Resume {
             for(var i = 0; i < this.rows[row].length; i++) {
                     this.rows[row][i].height += height_change;
             }
+	this.max_height += height_change;
         this.drawPage(selection);
         }
     }
 
     resize_horizontal(row, column, width_change) {
-        if(this.rows[row].length == column + 1){
+	//case: only block in row
+        if(this.rows[row].length == 1){
             this.rows[row][0].width = this.max_width;
             this.drawPage(selection);
             return;
 	}
+	//case: last block in row
+	if(this.rows[row].length == column+1){
+            var cur_width = 0;
+	    for(var i=0; i<column; i++){
+                cur_width += this.rows[row][i].width;
+            }
+	    this.rows[row][column].width = this.max_width - cur_width;
+	    this.drawPage(selection);
+            return;
+	}
+
+	//case: width change (+) too large
         if(width_change > this.rows[row][(column+1)].width - this.minimum_block_width) {
             alert("horizontal resize cannot be larger than next block");
 	            //the way it is currently written, will give error but not stop resize
-                this.drawPage(selection);
+            this.drawPage(selection);
             return;
-        } else {
+        } 
+        //case: width change (-) too large
+        else if(this.rows[row][column].width + width_change <= 0){
+            this.drawPage(selection);
+            return;
+        }
+        //case: can be resized
+        else {
             this.rows[row][(column+1)].width -= width_change;
             this.rows[row][column].width += width_change;
             this.drawPage(selection);
@@ -374,9 +399,13 @@ function initialize() {
 }
 
 function changeSelection() {
+    var selection_old = selection.slice();
     selection = [$(this).data("row"), $(this).data("column")];
-    $(".current").removeClass("current");
-    $(this).parent().addClass("current");
+    if(selection_old[0] != selection[0] || selection_old[1] != selection[1]){
+        $(".current").removeClass("current");
+        $(this).parent().addClass("current");
+        new_selection = true;
+    }
 }
 
 function textChanged() {
@@ -407,25 +436,59 @@ function triggerMove(event, ui) {
 }
 
 function getTextareas(my_resume){
-      var $textareas = jQuery('textarea'); 
+/*
+var $textareas = jQuery('textarea');
+    
+       // set init (default) state   
+       $textareas.data('x', $textareas.outerWidth());
+       $textareas.data('y', $textareas.outerHeight()); 
+
+       $textareas.mouseup(function(){
+
+          var $this = jQuery(this);
+
+          if (  $this.outerWidth()  != $this.data('x') 
+             || $this.outerHeight() != $this.data('y') )
+          {
+              alert( $this.outerWidth()  + ' - ' + $this.data('x') + '\n' 
+                   + $this.outerHeight() + ' - ' + $this.data('y')
+                   );
+          }
+      
+          // set new height/width
+          $this.data('x', $this.outerWidth());
+          $this.data('y', $this.outerHeight()); 
+       });
+
+*/
+
+      var $textareas = jQuery('textarea');
 
       $textareas.data('x', $textareas.outerWidth());
       $textareas.data('y', $textareas.outerHeight());
 
-      $textareas.mouseup(function(textArea){
+      $textareas.mouseup(function(){
         var $this = jQuery(this);
         var changeX, changeY;
 
-        if($this.outerWidth() != $this.data('x') && $this.outerHeight() != $this.data('y')){
-          changeX = $this.outerWidth() - $this.data('x');
+if(new_selection == true){
+	$this.data('x', $this.outerWidth());
+	$this.data('y', $this.outerHeight());
+	new_selection = false;
+	return;
+}
+
+        if($this.outerWidth() != $this.data('x') || $this.outerHeight() != $this.data('y')){
+          changeX = $this.outerWidth() - $this.data('x');//pulling incorrect x
           changeY = $this.outerHeight() - $this.data('y');
 
+          //alert( "width: " + changeX + '\n' + "height:" + changeY);
           my_resume.resize_vertical(selection[0], changeY);
-          my_resume.resize_horizontal(selection[0], selection[1], changeX); //drawpage after this
+          my_resume.resize_horizontal(selection[0], selection[1], changeX);
           $this.data('x', $this.outerWidth());
           $this.data('y', $this.outerHeight());			
         }
-        else if($this.outerWidth() != $this.data('x')){
+        /*else if($this.outerWidth() != $this.data('x')){
           changeX = $this.outerWidth() - $this.data('x');
 
           my_resume.resize_horizontal(selection[0], selection[1], changeX);
@@ -436,7 +499,8 @@ function getTextareas(my_resume){
 
           my_resume.resize_vertical(selection[0], changeY);
           $this.data('y', $this.outerHeight());
-        }
-      });}
+        }*/
+      });
+}
 
 $(document).ready(initialize);
