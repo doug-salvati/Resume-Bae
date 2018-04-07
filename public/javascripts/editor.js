@@ -174,13 +174,6 @@ class Resume {
         }
     }
 
-    /*add bullets to every newline */
-    bullets(row, column) {
-
-
-
-    }
-
     /* Change position of block in the document */
     move(old_location, new_location) {
         let tmp;
@@ -436,36 +429,13 @@ function triggerMove(event, ui) {
 }
 
 function getTextareas(my_resume){
-/*
-var $textareas = jQuery('textarea');
-    
-       // set init (default) state   
-       $textareas.data('x', $textareas.outerWidth());
-       $textareas.data('y', $textareas.outerHeight()); 
-
-       $textareas.mouseup(function(){
-
-          var $this = jQuery(this);
-
-          if (  $this.outerWidth()  != $this.data('x') 
-             || $this.outerHeight() != $this.data('y') )
-          {
-              alert( $this.outerWidth()  + ' - ' + $this.data('x') + '\n' 
-                   + $this.outerHeight() + ' - ' + $this.data('y')
-                   );
-          }
-      
-          // set new height/width
-          $this.data('x', $this.outerWidth());
-          $this.data('y', $this.outerHeight()); 
-       });
-
-*/
 
       var $textareas = jQuery('textarea');
 
-      $textareas.data('x', $textareas.outerWidth());
-      $textareas.data('y', $textareas.outerHeight());
+      $textareas.each(function(){
+        $(this).data('x', $(this).outerWidth());
+        $(this).data('y', $(this).outerHeight());
+      });
 
       $textareas.mouseup(function(){
         var $this = jQuery(this);
@@ -479,27 +449,14 @@ if(new_selection == true){
 }
 
         if($this.outerWidth() != $this.data('x') || $this.outerHeight() != $this.data('y')){
-          changeX = $this.outerWidth() - $this.data('x');//pulling incorrect x
-          changeY = $this.outerHeight() - $this.data('y');
-
-          //alert( "width: " + changeX + '\n' + "height:" + changeY);
-          my_resume.resize_vertical(selection[0], changeY);
-          my_resume.resize_horizontal(selection[0], selection[1], changeX);
-          $this.data('x', $this.outerWidth());
-          $this.data('y', $this.outerHeight());			
-        }
-        /*else if($this.outerWidth() != $this.data('x')){
           changeX = $this.outerWidth() - $this.data('x');
-
-          my_resume.resize_horizontal(selection[0], selection[1], changeX);
-          $this.data('x', $this.outerWidth());
-        }
-        else if($this.outerHeight() != $this.data('y')){
           changeY = $this.outerHeight() - $this.data('y');
 
           my_resume.resize_vertical(selection[0], changeY);
+          my_resume.resize_horizontal(selection[0], selection[1], changeX);
+          $this.data('x', $this.outerWidth());
           $this.data('y', $this.outerHeight());
-        }*/
+        }
       });
 }
 
