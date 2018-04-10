@@ -63,7 +63,7 @@ class Resume {
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 if(this.rows[i][j].isLine == false){
-                    var block = $('<div class="block">' + this.rows[i][j].contents + '</div>');
+                    var block = $('<div class="block" contenteditable="true">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
                 else{
@@ -72,11 +72,11 @@ class Resume {
                 }
                 block.data("row", i).data("column", j);
                 block.mousedown(changeSelection);
-                block.css("min-height", this.rows[i][j].height - 10);
-                block.css("min-width", this.rows[i][j].width - 18);
+                block.css("height", this.rows[i][j].height - 10);
+                block.css("width", this.rows[i][j].width - 18);
                 $("#page").append(block);
                 // Wrap it to enable resizing and moving
-                block.wrap('<span class="blockwrapper" contenteditable="true"></span>');
+                block.wrap('<span class="blockwrapper"></span>');
                 if (i == selection[0] && j == selection[1]) {
                   block.parent().addClass("current");
                 }
@@ -351,7 +351,7 @@ function initialize() {
     $("#delete").click(function(){
         my_resume.delete_block(selection[0], selection[1]);
         selection = [0,0];
-        my_resume.drawPage(selection);
+        my_resume.drawPage(selection, false);
     });
 
     // Bullets
