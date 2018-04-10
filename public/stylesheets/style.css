@@ -51,6 +51,12 @@ body {
   /*border: none;*/
   outline: none;
   font-size: 12pt;
+  cursor: auto;
+  line-height: 12pt;
+  display: inline-block;
+  overflow: scroll;
+  resize: both;
+  padding: 0 2px 0 2px;
 }
 
 .line {
@@ -155,4 +161,8 @@ body {
 li:before {
   content: "+";
   margin-right: 10px;
+}
+
+[contenteditable]:focus {
+  outline: 0px solid transparent;
 }

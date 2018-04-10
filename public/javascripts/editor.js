@@ -10,7 +10,7 @@ function revert_handler(valid) {
     return valid;
 }
 // Settings for jQuery drag and drop
-const drag_options = {revert: revert_handler, zIndex: 999};
+const drag_options = {revert: revert_handler, zIndex: 999, containment: "#page"};
 const drop_options = {accept: ".blockwrapper", drop: triggerMove};
 // Which block is currently being dragged?
 var draggingr = -1;
@@ -46,27 +46,37 @@ class Resume {
 	this.line_style = 'solid';
     }
 
-    /* Draw a row */
-    drawPage(selection) {
+    /* Draw a row
+    This class requires a div#page to work.
+    It will create and maintain elements of types
+    div.block and span.blockwrapper */
+    drawPage(selection, save = true) {
+        // Save current state
+        if (save) {
+            $('.block').each(function() {
+                var richtext = $(this).html();
+                var block = my_resume.rows[$(this).data("row")][$(this).data("column")];
+                block.contents = richtext;
+            });
+        }
         $("#page").html("");
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 if(this.rows[i][j].isLine == false){
-                    var block = $('<textarea class="block">' + this.rows[i][j].contents + '</textarea>');
+                    var block = $('<div class="block">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
                 else{
-                    var block = $('<textarea class="line"></textarea>');
+                    var block = $('<div class="line"></div>');
                     block.css("border", "3px " + this.line_style + " black"); //moved here to deal with line 
                 }
                 block.data("row", i).data("column", j);
                 block.mousedown(changeSelection);
-                block.change(textChanged);
-                block.css("height", this.rows[i][j].height - 10);
-                block.css("width", this.rows[i][j].width - 18);
+                block.css("min-height", this.rows[i][j].height - 10);
+                block.css("min-width", this.rows[i][j].width - 18);
                 $("#page").append(block);
                 // Wrap it to enable resizing and moving
-                block.wrap('<span class="blockwrapper"></span>');
+                block.wrap('<span class="blockwrapper" contenteditable="true"></span>');
                 if (i == selection[0] && j == selection[1]) {
                   block.parent().addClass("current");
                 }
@@ -76,11 +86,19 @@ class Resume {
         // If a block is dragged at least halfway out of its row,
         //    the whole row joins it to swap rows 
         $('.blockwrapper').draggable(drag_options);  // Makes element click-and-drag
+        $('.block').mouseenter(function(event) {
+            $(this).parent().draggable({disabled: true});
+        });
+        $('.block').mouseleave(function() {
+            $(this).parent().draggable({disabled: false});
+        });
         // Store which element is being dragged and where the drag began
         $('.blockwrapper').mousedown(function(event) {
-            dragstart = event.pageY;
-            draggingr = $(this).children().first().data("row");
-            draggingc = $(this).children().first().data("column");
+            if (!$(this).draggable( "option", "disabled")) {
+                dragstart = event.pageY;
+                draggingr = $(this).children().first().data("row");
+                draggingc = $(this).children().first().data("column");
+            }
         });
         // Some values we need in the mousemove handler
         var max = this.max_width;
@@ -180,6 +198,8 @@ class Resume {
         // Move within a row
         if (old_location[0] == new_location[0]) {
             // Swap their indices
+            console.log(this.rows[old_location[0]][old_location[1]].contents);
+            console.log(this.rows[new_location[0]][new_location[1]].contents);
             tmp = this.rows[old_location[0]][old_location[1]];
             this.rows[old_location[0]][old_location[1]] = this.rows[new_location[0]][new_location[1]];
             this.rows[new_location[0]][new_location[1]] = tmp;
@@ -351,7 +371,7 @@ function initialize() {
             return line_length.join("\n");
             };
 
-            $('textarea').on('keydown', function(e) {
+            $('.block').on('keydown', function(e) {
             var t = $(this);
             if(e.which == 13) {
             t.val(linestart(t.val(), '\u2022'));
@@ -401,15 +421,15 @@ function changeSelection() {
     }
 }
 
-function textChanged() {
-    text = $(this).val();
-    block = my_resume.rows[$(this).data("row")][$(this).data("column")];
-    block.contents = text;
-}
-
 // On a drop event, this callback is triggered to adjust the resume
 //    object and re-draw
 function triggerMove(event, ui) {
+    // Save pre-move state
+    $('.block').each(function() {
+        var richtext = $(this).html();
+        var block = my_resume.rows[$(this).data("row")][$(this).data("column")];
+        block.contents = richtext;
+    });
     var drop_row = $(this).children().first().data("row");
     var drop_col = $(this).children().first().data("column");
     var drag_row = lastdragr;
@@ -425,12 +445,12 @@ function triggerMove(event, ui) {
     } else {
         selection[0] = drop[0];
     }
-    my_resume.drawPage(selection);
+    my_resume.drawPage(selection, false);
 }
 
 function getTextareas(my_resume){
 
-      var $textareas = jQuery('textarea');
+      var $textareas = jQuery('.block');
 
       $textareas.each(function(){
         $(this).data('x', $(this).outerWidth());
