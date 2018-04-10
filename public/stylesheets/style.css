@@ -158,7 +158,7 @@ body {
   cursor: pointer;
 }
 
-li:before {
+#classes_listing > li:before {
   content: "+";
   margin-right: 10px;
 }
@@ -169,12 +169,13 @@ li:before {
 
 #slider {
   background: lightgray;
+  z-index: 99;
 }
 
 #trigger {
   color: white;
   background: darkgray;
-  left: 2cm;
+  left: 200px;
   padding: 20px 10px 20px 10px;
   position: absolute;
   top: 50%;
@@ -184,4 +185,10 @@ li:before {
 
 #trigger:focus {
   outline: 0px solid transparent;
+}
+
+.content {
+  color: black;
+  padding: 10px;
+  background: white;
 }

@@ -307,7 +307,7 @@ function initialize() {
     $('#slider').slideReveal({
         trigger: $("#trigger"),
         push: false,
-        width: '2cm'
+        width: '200px'
     });
     my_resume = new Resume();
     var isDragging = false; //flag for whether or not the mouse is being dragged
