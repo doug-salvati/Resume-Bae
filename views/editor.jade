@@ -7,12 +7,12 @@ html
     script(defer, src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js", integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l", crossorigin="anonymous")
     script(defer, src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js", integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c", crossorigin="anonymous")
     script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    script(src="javascripts/vendor/jquery.slidereveal.min.js")
     link(href='stylesheets/style.css', rel='stylesheet')
 
   body.
     <div id="header">
       <a href=".."><img id="logo" src='img/rbicon.png'/></a>
-
       <span class="toolgroup">
         <span class="tooltip">
           <span id="add_blank" class="header_btn">
@@ -72,6 +72,8 @@ html
         <span class="tooltipmsg">Symbols</span>
       </span>
     </div>
+
+    <div id='slider'><button id='trigger'><i class="fas fa-bars"></i></button></div>
 
     <!-- Pop-up for adding a new blank class -->
     <div id="newclass">

@@ -304,6 +304,11 @@ class Resume {
 
 /* Init the resume element and the event handlers for the buttons */
 function initialize() {
+    $('#slider').slideReveal({
+        trigger: $("#trigger"),
+        push: false,
+        width: '2cm'
+    });
     my_resume = new Resume();
     var isDragging = false; //flag for whether or not the mouse is being dragged
     var classeslist = ["", "none"];
