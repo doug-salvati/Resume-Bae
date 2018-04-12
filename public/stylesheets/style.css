@@ -55,7 +55,6 @@ body {
   line-height: 12pt;
   display: inline-block;
   overflow: scroll;
-  resize: both;
   padding: 0 2px 0 2px;
 }
 

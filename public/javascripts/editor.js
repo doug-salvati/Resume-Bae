@@ -72,7 +72,10 @@ class Resume {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 if(this.rows[i][j].isLine == false){
                     var style = "";
-                    if (this.alignment != 'left') { style = 'text-align: ' + this.alignment}
+                    if (i == selection[0] && j == selection[1]) {
+                        style += "resize: both;";
+                    }
+                    if (this.alignment != 'left') { style += ' text-align: ' + this.alignment}
                     var block = $('<div class="block" contenteditable="true" style="' + style + '">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
@@ -430,8 +433,10 @@ function changeSelection() {
     var selection_old = selection.slice();
     selection = [$(this).data("row"), $(this).data("column")];
     if(selection_old[0] != selection[0] || selection_old[1] != selection[1]){
+        $(".current>.block").css("resize", "none");
         $(".current").removeClass("current");
         $(this).parent().addClass("current");
+        $(this).css("resize", "both");
         new_selection = true;
     }
 }
