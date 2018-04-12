@@ -50,7 +50,7 @@ html
 
       <span class="tooltip">
         <span id="bullets" class="header_btn">
-          <i class="fas fa-2x fa-dot-circle"></i>
+          <button id="bullet"><b><i class="fas fa-2x fa-dot-circle"></i></b></button>
         </span>
         <span class="tooltipmsg">Bullets</span>
       </span>
@@ -76,26 +76,6 @@ html
         <span class="tooltipmsg">Symbols</span>
       </span>
 
-      <span class="tooltip">
-        <span id="bolder" class="header_btn">
-          <button id="bold"><b><i class="fas fa-bold"></i></b></button>
-        </span>
-        <span class="tooltipmsg">Bold</span>
-      </span>
-
-      <span class="tooltip">
-        <span id="bolder" class="header_btn">
-          <button id="italic"><b><i class="fas fa-italic"></i></b></button>
-        </span>
-        <span class="tooltipmsg">Italic</span>
-      </span>
-	  
-      <span class="tooltip">
-        <span id="bolder" class="header_btn">
-          <button id="underline"><b><i class="fas fa-underline"></i></b></button>
-        </span>
-        <span class="tooltipmsg">Underline</span>
-      </span>
     </div>
 
     <div id='slider'>
@@ -104,7 +84,7 @@ html
       <div id='cssmenu'>
         <ul>
           <li class='active has-sub'><a href='#'><span>Text</span></a>
-              <ul><li class='content'><span>Content</span></li></ul>
+              <ul><li class='content'><span><button id="bold"><b><i class="fas fa-bold"></i></b></button><button id="italic"><b><i class="fas fa-italic"></i></b></button><button id="underline"><b><i class="fas fa-underline"></i></b></button></span></li></ul>
           </li>
           <li class='active has-sub'><a href='#'><span>Size</span></a>
               <ul><li class='content'><span>Content</span></li></ul>
