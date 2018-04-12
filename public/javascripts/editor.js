@@ -237,7 +237,7 @@ class Resume {
             for(var i = 0; i < this.rows[row].length; i++) {
                     this.rows[row][i].height += height_change;
             }
-	this.max_height += height_change;
+	this.available_height += height_change;
         this.drawPage(selection);
         }
     }

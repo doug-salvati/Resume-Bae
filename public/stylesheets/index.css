@@ -1,0 +1,115 @@
+.background{
+	width: 100%;
+	background-color: navy;
+	height: 1200px;
+	position: relative;
+	top: -270px;
+}
+.content{
+	display: inline;
+	text-align: center;
+	font: bold 18pt Arial;
+	color: white;
+}
+.pageChange{
+	background-color: navy;
+        font: bold 20px Arial;
+	text-decoration: none;
+	color: white;
+	padding: 5px 20px 5px 20px;
+	border: 1px solid cadetBlue;
+	border-radius: 10px;
+	margin-left: calc(50% - 75px);
+	z-index: 100;
+	position: relative;
+}
+
+.icon{
+	width: 170px;
+	margin: auto;
+}
+.headerwrapper{
+	margin: auto;
+	display: block;
+	text-align: center;
+	z-index: 100;
+	position: relative;
+}
+
+.header{
+	margin: auto;
+	color: navy;
+	font: bold 36px Arial;
+}
+
+.topImg{
+	max-width: 900px;
+	width: 100%;
+	height: 310px;
+	position: relative;
+	z-index: 0;
+	top: 300px;
+}
+
+.sideImg{
+	height: 200px;
+	width: 65vw;
+	max-width: 550px;
+}
+
+.bottomImg{
+	max-width: 900px;
+	width: 100%;
+	height: 200px;
+	position: relative;
+	z-index: 0;
+	top: -100px;
+}
+
+#header {
+  background: white;
+  padding: 5px;
+  margin-bottom: 50px;
+  position: fixed;
+  width: 110vw;
+  z-index: 1000;
+  top: 0;
+  left: 0px;
+}
+
+#logo {
+  height: 30px;
+  margin: 0px 20px 0px 20px;
+}
+
+#bottomText{
+	color: white;
+	text-align: center;
+	background-color: navy;
+	padding: 30px;
+	position: relative;
+	top: -40px;
+}
+
+body{
+	max-width: 900px;
+	min-width: 200px;
+	margin: auto;
+	background-image: url('../img/background.jpeg');
+	/*background: radial-gradient(900px, blue, navy);*/
+	background-size: cover;
+	background-repeat: no-repeat;
+
+	
+}
+
+table{
+	padding: 0;
+	border: 0;
+	background-image: url('../img/background.jpeg');
+}
+
+td{
+	padding-left: 5px;
+	padding-right: 5px;
+}
