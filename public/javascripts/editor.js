@@ -347,7 +347,20 @@ function initialize() {
         }
         if (!(classeslist.includes(classname))) {
             classeslist.push(classname);
-            $("#classes_listing").append("<li>" + classname + "</ul>");
+            var new_listing = $("<li>" + classname + "</ul>");
+            new_listing.click(function() {
+                var classname = $(this).text();
+                if (classname == "No Class") class_choice = "none";
+                var direction = $("input[name=existing_class_row]:checked").val();
+                if (direction == "vertical") {
+                    my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+                    my_resume.drawPage(selection);
+                } else {
+                    my_resume.add_block_horizontal(selection[0], classname);
+                    my_resume.drawPage(selection);
+                }
+            });
+            $("#classes_listing").append(new_listing);
         }
     });
     // Add an existing class dropdown
