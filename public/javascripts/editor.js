@@ -435,7 +435,7 @@ function initialize() {
         my_resume.drawPage(selection);
     });  
     $("#add_line_horizontal").click(function(){
-        my_resume.add_line_horizontal(my_resume.rows[selection[0]].length + 1);
+        my_resume.add_line_horizontal(my_resume.rows.length + 1);
         my_resume.drawPage(selection);
     });
 
