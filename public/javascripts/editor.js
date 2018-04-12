@@ -399,6 +399,20 @@ function initialize() {
         document.execCommand('underline');
     });
 
+        //strikethrough function
+    $("#strikethrough").click(function() {
+        document.execCommand('strikeThrough');
+    });
+
+        //undo function
+    $("#undo").click(function() {
+        document.execCommand('undo');
+    });
+
+        //redo function
+    $("#redo").click(function() {
+        document.execCommand('redo');
+    });
 
     // Bullets
     $("#bullet").click(function() {
