@@ -385,34 +385,25 @@ function initialize() {
         my_resume.drawPage(selection, false);
     });
 
+    //bold function
+    $("#bold").click(function() {
+        document.execCommand('bold');
+    });
+
+    //italic function
+    $("#italic").click(function() {
+        document.execCommand('italic');
+    });
+
+        //underline function
+    $("#underline").click(function() {
+        document.execCommand('underline');
+    });
+
+
     // Bullets
-    $("#bullets").click(function() {
-
-
-        //if(toggle == 0) {
-        
-            var text = my_resume.rows[selection[0]][selection[1]].contents;
-            my_resume.rows[selection[0]][selection[1]].contents = text.replace(/^/g, "\u2022").replace(/\n/g,"\n\u2022");
-            my_resume.drawPage(selection);
-
-            var linestart = function(text, bull) {
-            var line_length = text.split("\n");
-            var i = line_length.length-1;
-            line_length[i] = line_length[i]+'\n'+bull;
-            return line_length.join("\n");
-            };
-
-            $('.block').on('keydown', function(e) {
-            var t = $(this);
-            if(e.which == 13) {
-            t.val(linestart(t.val(), '\u2022'));
-            return false;
-            }  
-            //toggle = 1;
-        //} else {
-            //toggle = 0;
-        //}
-        });
+    $("#bullet").click(function() {
+        document.execCommand('insertUnorderedList');
     });
 
     $("a").mousedown(function(){
