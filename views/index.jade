@@ -1,5 +1,41 @@
-extends layout
+doctype html
+//extends layout
 
-block content
-  h1= title
-  a(href="editor") Get Started
+// block content
+  //h1= title
+  //a(href="editor") Get Started 
+
+html
+  head  
+    link(href='stylesheets/index.css', rel='stylesheet')
+
+  body
+    <div id="header">
+    <a href=""><img id="logo" src='img/rbicon.png'/></a>
+    </div>
+    <div class="background">
+    <img class="topImg" src="img/top.jpg" alt="bottomPicture"></img>
+    <div class="headerwrapper"><img src="img/rbicon.png" alt="Icon" class="icon"></img>
+    <h1 class="header">Resume Bae</h1></div><br>
+    <a href="editor" class="pageChange">Get started</a><br>
+    <hr>
+    <br>
+    <table>
+    <tr><td><img class="sideImg" src="img/index1.jpg" alt="leftPicture"></img></td><td>
+    <p class="content">Use Resume Bae to create your own custom resumes</p></td></tr>
+    </table>
+
+    <table>
+    <tr><td><p class="content">Block based styling makes it easy to get your content where you want it</p></td><td>
+    <img class="sideImg" src="img/Resumes.jpg" alt="rightPicture"></img><td><tr>
+    </table>
+
+    <table>
+    <tr><td><img class="sideImg" src="img/index3.jpg" alt="leftPicture"></img></td><td>
+    <p class="content">Stand out with a custom resume from Resume Bae today</p></td></tr>
+    </table>
+    <br><br><br><br>
+    <a href="editor" class="pageChange">Get started</a>
+    <img class="bottomImg" src="img/bottom.jpg" alt="bottomPicture"></img>
+    </div>
+    <p id="bottomText">Created by: Orion Dalton   Connor Lord   Douglas Salvati c. 2018</p>
