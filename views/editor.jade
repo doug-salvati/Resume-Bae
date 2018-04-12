@@ -4,6 +4,7 @@ html
   head
     script(src="https://code.jquery.com/jquery-3.3.1.min.js")
     script(src="javascripts/editor.js")
+    script(src="javascripts/sidebar.js")
     script(defer, src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js", integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l", crossorigin="anonymous")
     script(defer, src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js", integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c", crossorigin="anonymous")
     script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
@@ -93,7 +94,12 @@ html
               <ul><li class='content'><span>Content</span></li></ul>
           </li>
           <li class='active has-sub'><a href='#'><span>Alignment</span></a>
-              <ul><li class='content'><span>Content</span></li></ul>
+              <ul><li class='content'><span>
+                <button class='align' id='align-l' disabled><i class="fas fa-align-left"></i></button>
+                <button class='align' id='align-c'><i class="fas fa-align-center"></i></button>
+                <button class='align' id='align-r'><i class="fas fa-align-right"></i></button>
+                <button class='align' id='align-j'><i class="fas fa-align-justify"></i></button>
+              </span></li></ul>
           </li>
         </ul>
         </div>

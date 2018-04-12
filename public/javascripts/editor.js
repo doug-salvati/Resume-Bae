@@ -33,6 +33,9 @@ class Block {
     }
 }
 
+/*This class requires a div#page to work.
+    It will create and maintain elements of types
+    div.block and span.blockwrapper */
 class Resume {
     constructor() { //perhaps add an available width that can be given to last block in row
         this.max_height = 9 * ppi;
@@ -42,14 +45,19 @@ class Resume {
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
         this.rows = [[new Block(this.default_block_height, this.max_width, false)]];
-	this.selected_block = [0, 0]; //Currently selected block (X, Y)
-	this.line_style = 'solid';
+        this.alignment = 'left';
+	    this.line_style = 'solid';
     }
 
-    /* Draw a row
-    This class requires a div#page to work.
-    It will create and maintain elements of types
-    div.block and span.blockwrapper */
+    save() {
+        $('.block').each(function() {
+            var richtext = $(this).html();
+            var block = my_resume.rows[$(this).data("row")][$(this).data("column")];
+            block.contents = richtext;
+        });
+    }
+
+    /* Draw a row */
     drawPage(selection, save = true) {
         // Save current state
         if (save) {
@@ -63,7 +71,9 @@ class Resume {
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 if(this.rows[i][j].isLine == false){
-                    var block = $('<div class="block" contenteditable="true">' + this.rows[i][j].contents + '</div>');
+                    var style = "";
+                    if (this.alignment != 'left') { style = 'text-align: ' + this.alignment}
+                    var block = $('<div class="block" contenteditable="true" style="' + style + '">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
                 else{
