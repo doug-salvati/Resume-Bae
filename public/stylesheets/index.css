@@ -8,7 +8,7 @@
 .content{
 	display: inline;
 	text-align: center;
-	font: bold 18pt Georgia;
+	font: bold 18pt Arial;
 	color: white;
 }
 .pageChange{
@@ -39,7 +39,7 @@
 .header{
 	margin: auto;
 	color: navy;
-	font: bold 36px Verdana;
+	font: bold 36px Arial;
 }
 
 .topImg{
@@ -71,9 +71,10 @@
   padding: 5px;
   margin-bottom: 50px;
   position: fixed;
-  width: 100vw;
+  width: 110vw;
   z-index: 1000;
   top: 0;
+  left: 0px;
 }
 
 #logo {
