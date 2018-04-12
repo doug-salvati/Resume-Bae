@@ -8,7 +8,7 @@ $(document).ready(function() {
     $('#align-j').click(function() {$('.align').prop('disabled', false); $(this).prop('disabled', true); applyAlignment('j');});
     function applyAlignment(type) {
         my_resume.save();
-        my_resume.alignment = {'l':'left', 'c':'center', 'r':'right', 'j':'justify'}[type];
+        my_resume.rows[selection[0]][selection[1]].alignment = {'l':'left', 'c':'center', 'r':'right', 'j':'justify'}[type];
         my_resume.drawPage(selection);
     }
 });

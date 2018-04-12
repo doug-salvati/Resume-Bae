@@ -30,6 +30,7 @@ class Block {
         this.contents = "";
         this.isLine = isLine; // denotes whether the block is a line or not
         this.class = classname;
+        this.alignment = 'left';
     }
 }
 
@@ -45,7 +46,6 @@ class Resume {
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
         this.rows = [[new Block(this.default_block_height, this.max_width, false)]];
-        this.alignment = 'left';
 	    this.line_style = 'solid';
     }
 
@@ -75,7 +75,7 @@ class Resume {
                     if (i == selection[0] && j == selection[1]) {
                         style += "resize: both;";
                     }
-                    if (this.alignment != 'left') { style += ' text-align: ' + this.alignment}
+                    if (this.rows[i][j].alignment != 'left') { style += ' text-align: ' + this.rows[i][j].alignment}
                     var block = $('<div class="block" contenteditable="true" style="' + style + '">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
@@ -162,8 +162,9 @@ class Resume {
 
         this.available_height -= height;
 
-        this.rows.splice(row + 1, 0, [new Block(height, this.max_width, false, classname)]);
-	getTextareas(this);
+        this.rows.splice(row, 0, [new Block(height, this.max_width, false, classname)]);
+        console.log("adding row at " + row);
+	    getTextareas(this);
     }
 
     /* Add a block to the page at the end of the current road*/
@@ -211,8 +212,6 @@ class Resume {
         // Move within a row
         if (old_location[0] == new_location[0]) {
             // Swap their indices
-            console.log(this.rows[old_location[0]][old_location[1]].contents);
-            console.log(this.rows[new_location[0]][new_location[1]].contents);
             tmp = this.rows[old_location[0]][old_location[1]];
             this.rows[old_location[0]][old_location[1]] = this.rows[new_location[0]][new_location[1]];
             this.rows[new_location[0]][new_location[1]] = tmp;
@@ -237,7 +236,7 @@ class Resume {
             for(var i = 0; i < this.rows[row].length; i++) {
                     this.rows[row][i].height += height_change;
             }
-	this.max_height += height_change;
+	    this.available_height -= height_change;
         this.drawPage(selection);
         }
     }
@@ -339,7 +338,7 @@ function initialize() {
         var direction = $("input[name=newclass_row]:checked").val();
         var classname = $("#newclass_name").val();
         if (direction == "vertical") {
-            my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+            my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
             my_resume.drawPage(selection);
         } else {
             my_resume.add_block_horizontal(selection[0], classname);
@@ -353,7 +352,7 @@ function initialize() {
                 if (classname == "No Class") class_choice = "none";
                 var direction = $("input[name=existing_class_row]:checked").val();
                 if (direction == "vertical") {
-                    my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+                    my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
                     my_resume.drawPage(selection);
                 } else {
                     my_resume.add_block_horizontal(selection[0], classname);
@@ -370,7 +369,7 @@ function initialize() {
         if (classname == "No Class") class_choice = "none";
         var direction = $("input[name=existing_class_row]:checked").val();
         if (direction == "vertical") {
-            my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+            my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
             my_resume.drawPage(selection);
         } else {
             my_resume.add_block_horizontal(selection[0], classname);
