@@ -33,6 +33,9 @@ class Block {
     }
 }
 
+/*This class requires a div#page to work.
+    It will create and maintain elements of types
+    div.block and span.blockwrapper */
 class Resume {
     constructor() { //perhaps add an available width that can be given to last block in row
         this.max_height = 9 * ppi;
@@ -42,14 +45,19 @@ class Resume {
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
         this.rows = [[new Block(this.default_block_height, this.max_width, false)]];
-	this.selected_block = [0, 0]; //Currently selected block (X, Y)
-	this.line_style = 'solid';
+        this.alignment = 'left';
+	    this.line_style = 'solid';
     }
 
-    /* Draw a row
-    This class requires a div#page to work.
-    It will create and maintain elements of types
-    div.block and span.blockwrapper */
+    save() {
+        $('.block').each(function() {
+            var richtext = $(this).html();
+            var block = my_resume.rows[$(this).data("row")][$(this).data("column")];
+            block.contents = richtext;
+        });
+    }
+
+    /* Draw a row */
     drawPage(selection, save = true) {
         // Save current state
         if (save) {
@@ -63,7 +71,12 @@ class Resume {
         for (var i = 0; i < this.rows.length; ++i) {
             for (var j = 0; j < this.rows[i].length; ++j) {
                 if(this.rows[i][j].isLine == false){
-                    var block = $('<div class="block" contenteditable="true">' + this.rows[i][j].contents + '</div>');
+                    var style = "";
+                    if (i == selection[0] && j == selection[1]) {
+                        style += "resize: both;";
+                    }
+                    if (this.alignment != 'left') { style += ' text-align: ' + this.alignment}
+                    var block = $('<div class="block" contenteditable="true" style="' + style + '">' + this.rows[i][j].contents + '</div>');
                     block.css("border", "none"); //moved here to deal with line
 	        }
                 else{
@@ -334,7 +347,20 @@ function initialize() {
         }
         if (!(classeslist.includes(classname))) {
             classeslist.push(classname);
-            $("#classes_listing").append("<li>" + classname + "</ul>");
+            var new_listing = $("<li>" + classname + "</ul>");
+            new_listing.click(function() {
+                var classname = $(this).text();
+                if (classname == "No Class") class_choice = "none";
+                var direction = $("input[name=existing_class_row]:checked").val();
+                if (direction == "vertical") {
+                    my_resume.add_block_vertical(my_resume.rows[selection[0]].length + 1, classname);
+                    my_resume.drawPage(selection);
+                } else {
+                    my_resume.add_block_horizontal(selection[0], classname);
+                    my_resume.drawPage(selection);
+                }
+            });
+            $("#classes_listing").append(new_listing);
         }
     });
     // Add an existing class dropdown
@@ -359,34 +385,25 @@ function initialize() {
         my_resume.drawPage(selection, false);
     });
 
+    //bold function
+    $("#bold").click(function() {
+        document.execCommand('bold');
+    });
+
+    //italic function
+    $("#italic").click(function() {
+        document.execCommand('italic');
+    });
+
+        //underline function
+    $("#underline").click(function() {
+        document.execCommand('underline');
+    });
+
+
     // Bullets
-    $("#bullets").click(function() {
-
-
-        //if(toggle == 0) {
-        
-            var text = my_resume.rows[selection[0]][selection[1]].contents;
-            my_resume.rows[selection[0]][selection[1]].contents = text.replace(/^/g, "\u2022").replace(/\n/g,"\n\u2022");
-            my_resume.drawPage(selection);
-
-            var linestart = function(text, bull) {
-            var line_length = text.split("\n");
-            var i = line_length.length-1;
-            line_length[i] = line_length[i]+'\n'+bull;
-            return line_length.join("\n");
-            };
-
-            $('.block').on('keydown', function(e) {
-            var t = $(this);
-            if(e.which == 13) {
-            t.val(linestart(t.val(), '\u2022'));
-            return false;
-            }  
-            //toggle = 1;
-        //} else {
-            //toggle = 0;
-        //}
-        });
+    $("#bullet").click(function() {
+        document.execCommand('insertUnorderedList');
     });
 
     $("a").mousedown(function(){
@@ -420,8 +437,10 @@ function changeSelection() {
     var selection_old = selection.slice();
     selection = [$(this).data("row"), $(this).data("column")];
     if(selection_old[0] != selection[0] || selection_old[1] != selection[1]){
+        $(".current>.block").css("resize", "none");
         $(".current").removeClass("current");
         $(this).parent().addClass("current");
+        $(this).css("resize", "both");
         new_selection = true;
     }
 }
