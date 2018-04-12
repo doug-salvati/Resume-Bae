@@ -359,6 +359,22 @@ function initialize() {
         my_resume.drawPage(selection, false);
     });
 
+    //bold function
+    $("#bold").click(function() {
+        document.execCommand('bold');
+    });
+
+    //italic function
+    $("#italic").click(function() {
+        document.execCommand('italic');
+    });
+
+        //underline function
+    $("#underline").click(function() {
+        document.execCommand('underline');
+    });
+
+
     // Bullets
     $("#bullets").click(function() {
 

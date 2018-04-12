@@ -2,6 +2,7 @@ doctype html
 
 html
   head
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
     script(src="https://code.jquery.com/jquery-3.3.1.min.js")
     script(src="javascripts/editor.js")
     script(defer, src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js", integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l", crossorigin="anonymous")
@@ -70,6 +71,27 @@ html
           <i class="fas fa-2x fa-dollar-sign"></i>
         </span>
         <span class="tooltipmsg">Symbols</span>
+      </span>
+
+      <span class="tooltip">
+        <span id="bolder" class="header_btn">
+          <button id="bold"><b><i class="fas fa-bold"></i></b></button>
+        </span>
+        <span class="tooltipmsg">Bold</span>
+      </span>
+
+      <span class="tooltip">
+        <span id="bolder" class="header_btn">
+          <button id="italic"><b><i class="fas fa-italic"></i></b></button>
+        </span>
+        <span class="tooltipmsg">Italic</span>
+      </span>
+	  
+      <span class="tooltip">
+        <span id="bolder" class="header_btn">
+          <button id="underline"><b><i class="fas fa-underline"></i></b></button>
+        </span>
+        <span class="tooltipmsg">Underline</span>
       </span>
     </div>
 
