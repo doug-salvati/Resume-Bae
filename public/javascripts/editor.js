@@ -30,7 +30,7 @@ class Block {
         this.contents = "";
         this.isLine = isLine; // denotes whether the block is a line or not
         this.class = classname;
-        this.alignment = 'left';
+        //this.alignment = 'left';
     }
 }
 
@@ -417,6 +417,43 @@ function initialize() {
     // Bullets
     $("#bullet").click(function() {
         document.execCommand('insertUnorderedList');
+    });
+
+    // numbered list
+    $("#number").click(function() {
+        document.execCommand('insertOrderedList');
+    });
+
+    // align left
+    $("#alignl").click(function() {
+        document.execCommand('justifyLeft');
+    });
+
+    // align right
+    $("#alignr").click(function() {
+        document.execCommand('justifyRight');
+    });
+
+    // align center
+    $("#alignc").click(function() {
+        document.execCommand('justifyCenter');
+    });
+
+    // align full
+    $("#alignf").click(function() {
+        document.execCommand('justifyFull');
+    });
+
+    // size
+    $("#sizeb").click(function() {
+        var size = parseInt(document.getElementById('size').value);
+        document.execCommand('fontSize', false, size);
+    });
+
+    // color
+    $("#colorb").click(function() {
+        var color = document.getElementById('color').value;
+        document.execCommand('forecolor', false, color);
     });
 
     $("a").mousedown(function(){
