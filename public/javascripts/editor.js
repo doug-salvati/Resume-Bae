@@ -326,7 +326,12 @@ function initialize() {
         push: false,
         width: '200px'
     });
-    my_resume = new Resume();
+    // Load a saved resume if logged in
+    if (typeof(saved) === 'undefined') {
+        my_resume = new Resume();
+    } else {
+        my_resume = Object.setPrototypeOf(saved, Resume.prototype);
+    }
     var isDragging = false; //flag for whether or not the mouse is being dragged
     var classeslist = ["", "none"];
 
@@ -447,6 +452,11 @@ function initialize() {
     //NOT IMPLEMENTED YET
     $("#change_line_style").change(function(){ 
         //my_resume.change_line_style(ELEMENT_IN_DROP_DOWN);
+    });
+
+    $("#save_resume").click(function() {
+        my_resume.save();
+        $.post("/editor/save", { resume: JSON.stringify(my_resume) });
     });
 
 }

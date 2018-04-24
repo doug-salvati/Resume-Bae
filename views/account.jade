@@ -1,0 +1,11 @@
+doctype html
+
+//- This template shows the sign up button or the logout button depending on whether
+//- a user is logged in.
+
+html
+    body
+        if (typeof(user) === 'undefined')
+            a(href="user") Sign Up or Log In
+        else
+            a(href="user/logout") Logout #{user}
