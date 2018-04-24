@@ -1,0 +1,28 @@
+doctype html
+
+//- Page for user login or account creation
+
+html
+  head  
+    link(href='stylesheets/user.css', rel='stylesheet')
+
+  body.
+    <div id="header">
+      <a href="/"><img id="logo" src='img/rbicon.png'/></a>
+    </div>
+    <div class="background">
+      <h1>Sign Up</h1>
+      <form action="/user/create" method="post">
+        Username: <input type="text" name="username"><br/>
+        Password: <input type="password" name="password"><br/>
+        Confirm: <input type="password" name="passwordConf"><br/>
+        <button type="submit">Create Account</button>
+      </form>
+
+      <h1>Log In</h1>
+      <form action="/user/login" method="post">
+        Username: <input type="text" name="existing_username"><br/>
+        Password: <input type="password" name="existing_password"><br/>
+        <button type="submit">Log In</button>
+      </form>
+    </div>

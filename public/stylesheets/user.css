@@ -1,0 +1,27 @@
+#header {
+    background: white;
+    padding: 5px;
+    margin-bottom: 50px;
+    position: fixed;
+    width: 100vw;
+    z-index: 1000;
+    top: 0;
+}
+
+#logo {
+    height: 30px;
+    margin: 0px 20px 0px 20px;
+}
+
+.background{
+    padding: 30px;
+    color: white;
+    font-family: sans-serif;
+}
+
+body {
+	margin: auto;
+	background-image: url('../img/background.jpeg');
+	background-size: cover;
+	background-repeat: no-repeat;
+}

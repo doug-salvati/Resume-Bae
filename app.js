@@ -4,11 +4,40 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 var index = require('./routes/index');
-var editor = require('./routes/editor');
 
 var app = express();
+
+// login system code
+//   thanks to https://medium.com/of-all-things-tech-progress/starting-with-authentication-a-tutorial-with-node-js-and-mongodb-25d524ca0359
+//   for teaching this
+// connect to mongo
+mongoose.connect('mongodb://localhost/resumebae');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Failed to connect to database:'));
+db.once('open', function () {
+  console.log("Connected to resumebae database")
+});
+
+// set up login sessions
+app.use(session({
+  secret: process.env.EXPRESS_SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}));
+// Save some variables to use in views
+app.use(function(req, res, next){
+  res.locals.user = req.session.username;
+  res.locals.resume = req.session.resume;
+  next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,7 +52,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/editor', editor);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

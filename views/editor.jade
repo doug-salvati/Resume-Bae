@@ -2,6 +2,8 @@ doctype html
 
 html
   head
+    if (typeof(user) !== 'undefined')
+      script var saved = !{resume};
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
     script(src="https://code.jquery.com/jquery-3.3.1.min.js")
     script(src="javascripts/editor.js")
@@ -15,17 +17,17 @@ html
     link(href='stylesheets/style.css', rel='stylesheet')
     link(href='stylesheets/vendor/styles.css', rel='stylesheet')
 
-  body.
-    <div id="header">
-      <a href=".."><img id="logo" src='img/rbicon.png'/></a>
-      <span class="toolgroup">
+  body
+    div(id="header")
+      a(href="..").
+        <img id="logo" src='img/rbicon.png'/>
+      span(class="toolgroup").
         <span class="tooltip">
           <span id="add_blank" class="header_btn">
             <i class="fas fa-2x fa-plus"></i>
           </span>
           <span class="tooltipmsg">Blank Class</span>
         </span>
-
         <span id="class_dropdown" class="header_btn">
           <i class="fas fa-2x fa-angle-down"></i>
         </span>
@@ -34,46 +36,37 @@ html
           <b>Existing Classes</b>
           <hr/>
           <input type="radio" name="existing_class_row" value="horizontal" checked> This row <br/>
-          <input type="radio" name="existing_class_row" value="vertical"> Bottom <br/>
+          <input type="radio" name="existing_class_row" value="vertical"> Next row <br/>
           <hr/>
           Choose Class to Add
           <ul id="classes_listing">
             <li>No Class</li>
           </ul>
         </div>
-      </span>
-      <span class="tooltip">
+      span(class="tooltip").
         <span id="delete" class="header_btn" name="delete">
           <i class="fas fa-2x fa-trash"></i>
         </span>
         <span class="tooltipmsg">Delete</span>
-      </span>
 
 
 
-      <!--<span class="tooltip">
-        <span id="add_line_vertical" class="header_btn" name="addlv">
-          <i class="fas fa-2x fa-minus"></i> V
-        </span>
-        <span class="tooltipmsg">Line</span>
-      </span>-->
-
-      <span class="tooltip">
+      span(class="tooltip").
         <span id="add_line_horizontal" class="header_btn" name="addlh">
           <i class="fas fa-2x fa-minus"></i>
         </span>
         <span class="tooltipmsg">Line</span>
-      </span>
 
-      <!--<span class="tooltip">
-        <span id="symbols" class="header_btn">
-          <i class="fas fa-2x fa-dollar-sign"></i>
-        </span>
-        <span class="tooltipmsg">Symbols</span>
-      </span>-->
-    </div>
+      if (typeof(user) !== 'undefined')
+        span(class="tooltip").
+          <span id="save_resume" class="header_btn" name="save">
+            <i class="fas fa-2x fa-save"></i>
+          </span>
+          <span class="tooltipmsg">Save</span>
 
-    <div id='slider'>
+      include account.jade
+
+    div(id='slider').
       <button id='trigger'><i class="fas fa-bars"></i></button>
       <!-- http://cssmenumaker.com/menu/slabbed-accordion-menu -->
       <div id='cssmenu'>
@@ -100,15 +93,14 @@ html
           </li>
         </ul>
         </div>
-    </div>
 
     <!-- Pop-up for adding a new blank class -->
-    <div id="newclass">
+    div(id="newclass").
       <h1>New Class!</h1>
       Class name: <input type='text' id="newclass_name"></input><br/><br/>
       <input type="radio" name="newclass_row" value="horizontal" checked> This row 
       <input type="radio" name="newclass_row" value="vertical"> Bottom <br/><br/>
       <button id="newclass_close">Close</button>
       <button id="newclass_create">Create</button>
-    </div>
-    <div id="page"></div>
+    
+    div(id="page")
