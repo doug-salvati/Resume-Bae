@@ -182,11 +182,13 @@ class Resume {
 
     /* Remove a block from the page */
     delete_block(row, column) {
+	if(this.rows[row][column].isLine == false){
         /* Make sure there's more than one */
-        if ($('.block').length == 1) {
+          if ($('.block').length == 1) {
             alert("You can't delete the last block");
             return;
-        }
+          }
+	}
 
         /* Give width to another block */
         if (column > 0) {
@@ -209,6 +211,9 @@ class Resume {
     /* Change position of block in the document */
     move(old_location, new_location) {
         let tmp;
+	if(old_location[0] < 0 || old_location[1] < 0 || new_location[0] < 0 || new_location[1] < 0){ //accounts for misread (negative) index values
+	return;
+}
         // Move within a row
         if (old_location[0] == new_location[0]) {
             // Swap their indices
@@ -479,7 +484,7 @@ function triggerMove(event, ui) {
     });
     var drop_row = $(this).children().first().data("row");
     var drop_col = $(this).children().first().data("column");
-    var drag_row = lastdragr;
+    var drag_row = lastdragr; //Will sometimes pull negative number instead of correct one
     var drag_col = draggingc;
     var drop = [drop_row, drop_col];
     var drag = [drag_row, drag_col];
