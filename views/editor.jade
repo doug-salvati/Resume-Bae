@@ -45,9 +45,9 @@ html
         </div>
       span(class="tooltip").
         <span id="delete" class="header_btn" name="delete">
-          <i class="fas fa-2x fa-trash"></i>
+          <i class="fas fa-2x fa-trash-alt"></i>
         </span>
-        <span class="tooltipmsg">Delete</span>
+        <span class="tooltipmsg">Delete <br> Block</span>
 
 
 
@@ -55,14 +55,14 @@ html
         <span id="add_line_horizontal" class="header_btn" name="addlh">
           <i class="fas fa-2x fa-minus"></i>
         </span>
-        <span class="tooltipmsg">Line</span>
+        <span class="tooltipmsg">Horizontal <br>Line Tool</span>
 
       if (typeof(user) !== 'undefined')
         span(class="tooltip").
           <span id="save_resume" class="header_btn" name="save">
             <i class="fas fa-2x fa-save"></i>
           </span>
-          <span class="tooltipmsg">Save</span>
+          <span class="tooltipmsg">Save to <br>Account</span>
 
       include account.jade
 
@@ -78,7 +78,18 @@ html
               <ul><li class='content'><span>Input (1-7)<br>3 is default size<input type='number' id='size' value='3'></input><button id="sizeb"><b><i class="fas fa-arrow-down"></i></b></button><br>1. Pick size<br>2. Highlight text or select block<br>3. Hit button</span></li></ul>
           </li>
           <li class='active has-sub'><a href='#'><span>Font</span></a>
-              <ul><li class='content'><span>Content</span></li></ul>
+              <ul><li class='content'><span>
+              <select onchange="fontEditor(this[this.selectedIndex].value)" id="font">
+              <option value="Arial">Arial</option>
+              <option value="Bookman Old Style">Bookman Old Style</option>
+              <option value="Calibri">Calibri</option>
+              <option value="Century Gothic">Century Gothic</option>
+              <option value="Comic Sans MS">Comic Sans MS</option>
+              <option value="Courier">Courier</option>
+              <option value="Impact">Impact</option>
+              <option value="Monotype Corsiva">Monotype Corsiva</option>
+              <option value="Times New Roman">Times New Roman</option>
+              </select></span></li></ul>
           </li>
           <li class='active has-sub'><a href='#'><span>Color</span></a>
               <ul><li class='content'><span>Color: <input class="jscolor" value="000000" id="color"><button id="colorb"><b><i class="fas fa-arrow-down"></i></b></button><br>1. Pick color<br>2. Highlight text or select block<br>3. Hit button</span></li></ul>

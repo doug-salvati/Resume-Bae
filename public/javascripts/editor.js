@@ -458,6 +458,36 @@ function initialize() {
     $("#sizeb").click(function() {
         var size = parseInt(document.getElementById('size').value);
         document.execCommand('fontSize', false, size);
+        switch(size) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                  var space = document.getElementsByClassName('block');
+                  for(var i=0; i<space.length; i++) {
+                        space[i].style.lineheight = '50px';
+                  }
+                break;
+            case 4:
+                break;
+            case 5:
+                  var space = document.getElementsByClassName('current');
+                  for(var i=0; i<space.length; i++) {
+                        space[i].style.lineheight = '50px';
+                  }
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+        }
+    });
+
+    // font
+    $("#font").click(function() {
+        var font = document.getElementById('font').value;
+        document.execCommand('fontName', false, font);
     });
 
     // color
