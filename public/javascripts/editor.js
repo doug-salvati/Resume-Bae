@@ -46,7 +46,7 @@ class Resume {
         this.minimum_block_width = ppi;
         this.available_height = this.max_height - this.default_block_height;
         this.rows = [[new Block(this.default_block_height, this.max_width, false)]];
-	    this.line_style = 'solid';
+        this.line_style = 'solid';
     }
 
     save() {
@@ -85,6 +85,13 @@ class Resume {
                 }
                 block.data("row", i).data("column", j);
                 block.mousedown(changeSelection);
+                block.focusout(function () {
+                    // If NOT hovering over a block (necessarily is the case if you clicked another)
+                    if (!$('.block, input').filter(function() { return $(this).is(":hover"); }).length) {
+                        // Don't allow you to focus
+                        $(this).focus();
+                    }
+                });
                 block.css("height", this.rows[i][j].height - 10);
                 block.css("width", this.rows[i][j].width - 18);
                 $("#page").append(block);
