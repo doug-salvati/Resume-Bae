@@ -91,7 +91,7 @@ body {
   color: black;
   background: lightgray;
   opacity: 0;
-  width: 0;
+  width: 5em;
   transition: opacity 0.25s, width 0.1s;
   border-radius: 5px;
   top: 150%;
@@ -102,8 +102,8 @@ body {
 .tooltip:hover .tooltipmsg {
   visibility: visible;
   opacity: .75;
-  width: 4em;
-  transition: opacity 0.5s, width 0.15s;
+  width: 6em;
+  transition: opacity 0.1s, width 0.15s;
 }
 
 .tooltip:hover {
