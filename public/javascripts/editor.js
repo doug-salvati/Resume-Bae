@@ -396,6 +396,7 @@ function initialize() {
 
     // Delete
     $("#delete").click(function(){
+        my_resume.save();
         my_resume.delete_block(selection[0], selection[1]);
         selection = [0,0];
         my_resume.drawPage(selection, false);
