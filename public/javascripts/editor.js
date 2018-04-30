@@ -22,12 +22,14 @@ var dragstart = 0;
 var lastdragr = -1;
 //flag for when new selected block is chosen
 var new_selection = false;
+// Class names and structures
+var classesdict = {};
 
 class Block {
     constructor(height, width, isLine, classname = "none") {
         this.height = height;
         this.width = width;
-        this.contents = "";
+        this.contents = (classname === "none") ? "" : classesdict[classname];
         this.isLine = isLine; // denotes whether the block is a line or not
         this.class = classname;
         //this.alignment = 'left';
@@ -36,7 +38,8 @@ class Block {
 
 /*This class requires a div#page to work.
     It will create and maintain elements of types
-    div.block and span.blockwrapper */
+    div.block and span.blockwrapper
+    Depends on existence of a global class listing, classdict */
 class Resume {
     constructor() { //perhaps add an available width that can be given to last block in row
         this.max_height = 9 * ppi;
@@ -54,7 +57,17 @@ class Resume {
             var richtext = $(this).html();
             var block = my_resume.rows[$(this).data("row")][$(this).data("column")];
             block.contents = richtext;
+            if (block.class !== "none") {
+                classesdict[block.class] = Resume.generateStructure(richtext, block.class);
+            }
         });
+    }
+
+    static generateStructure(richtext, classname) {
+        richtext = richtext.replace(/\>[^\<]+?\</g, ">" + classname + " <");
+        richtext = richtext.replace(/^[^\<]+?\</g, classname + " <");
+        richtext = richtext.replace(/\>[^\<]+?$/g, ">" + classname);
+        return richtext;
     }
 
     /* Draw a row */
@@ -354,29 +367,34 @@ function initialize() {
         $("#newclass").hide();
         var direction = $("input[name=newclass_row]:checked").val();
         var classname = $("#newclass_name").val();
-        if (direction == "vertical") {
-            my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
-            my_resume.drawPage(selection);
-        } else {
-            my_resume.add_block_horizontal(selection[0], classname);
-            my_resume.drawPage(selection);
-        }
         if (!(classeslist.includes(classname))) {
             classeslist.push(classname);
             var new_listing = $("<li>" + classname + "</ul>");
+            classesdict[classname] = "";
             new_listing.click(function() {
                 var classname = $(this).text();
                 if (classname == "No Class") class_choice = "none";
                 var direction = $("input[name=existing_class_row]:checked").val();
                 if (direction == "vertical") {
+                    my_resume.save();
                     my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
                     my_resume.drawPage(selection);
                 } else {
+                    my_resume.save();
                     my_resume.add_block_horizontal(selection[0], classname);
                     my_resume.drawPage(selection);
                 }
             });
             $("#classes_listing").append(new_listing);
+        }
+        if (direction == "vertical") {
+            my_resume.save();
+            my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
+            my_resume.drawPage(selection);
+        } else {
+            my_resume.save();
+            my_resume.add_block_horizontal(selection[0], classname);
+            my_resume.drawPage(selection);
         }
     });
     // Add an existing class dropdown
@@ -387,10 +405,10 @@ function initialize() {
         var direction = $("input[name=existing_class_row]:checked").val();
         if (direction == "vertical") {
             my_resume.add_block_vertical(my_resume.rows.length + 1, classname);
-            my_resume.drawPage(selection);
+            my_resume.drawPage(selection, true);
         } else {
             my_resume.add_block_horizontal(selection[0], classname);
-            my_resume.drawPage(selection);
+            my_resume.drawPage(selection, true);
         }
     });
 
