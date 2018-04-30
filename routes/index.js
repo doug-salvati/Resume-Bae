@@ -20,15 +20,19 @@ router.post('/user/create', function(req, res, next) {
     var userData = {
       username: req.body.username,
       password: req.body.password,
+      conf: req.body.passwordConf,
       resume: '{"max_height":864,"max_width":624,"default_block_height":216,"default_line_height":6,"minimum_block_width":96,"available_height":648,"rows":[[{"height":216,"width":624,"contents":"' + req.body.username + '\'s resume","isLine":false,"class":"none","alignment":"left"}]],"line_style":"solid"}',
     }
     // insert data to mongo
     console.log("Adding user to DB...");
+    if (userData.password !== userData.conf) {
+      return res.render("user", {errmsg: 'Passwords do not match my dude.'});
+    }
     User.create(userData, function (err, user) {
       console.log("DB call finished. Results to follow:");
       if (err) {
         console.log("ERROR: " + err);
-        return next(err);
+        return res.render("user", {errmsg: 'User already exists, try another name.'});
       } else {
         console.log("Succeeded, redirecting...");
         req.session.userId = user._id;
@@ -39,7 +43,7 @@ router.post('/user/create', function(req, res, next) {
     });
   } else {
     console.log("Request is bad!");
-    res.redirect("/");
+    return res.render("user", {errmsg: 'All fields must be filled in.'});
   }
 });
 
@@ -54,7 +58,7 @@ router.post('/user/login', function(req, res, next) {
         console.log("Failed to authenticate " + req.body.existing_username);
         var err = new Error('Wrong email or password.');
         err.status = 401;
-        return next(err);
+        return res.render("user", {errmsg: 'Wrong username or password.'});
       } else {
         console.log("Successfully authenticated " + req.body.existing_username);
         req.session.userId = user._id;
@@ -65,7 +69,7 @@ router.post('/user/login', function(req, res, next) {
     });
   } else {
     console.log("Request is bad!");
-    res.redirect("/");
+    return res.render("user", {errmsg: 'All fields must be filled in.'});
   }
 });
 

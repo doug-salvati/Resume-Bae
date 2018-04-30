@@ -1,3 +1,11 @@
+a {
+	color: #00B7FF;
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a:hover {
+	text-decoration: none;
+}
+
 .background{
 	width: 100%;
 	background-color: navy;

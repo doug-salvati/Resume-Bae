@@ -6,6 +6,6 @@ doctype html
 html
     body
         if (typeof(user) === 'undefined')
-            a(href="user") Sign Up or Log In
+            a(href="user", style="position: absolute; right: 15%;") Sign Up or Log In
         else
-            a(href="user/logout") Logout #{user}
+            a(href="user/logout", style="position: absolute; right: 15%;") Logout #{user}
