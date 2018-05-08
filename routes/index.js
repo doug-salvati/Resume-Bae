@@ -7,9 +7,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Résumé Bae' });
 });
 
-/* GET login page */
-router.get('/user', function(req, res, next) {
-  res.render('user', { title: 'Login to Résumé Bae' });
+/* POST login page */
+router.post('/user', function(req, res, next) {
+  res.render('user', { title: 'Login to Résumé Bae', resume: req.body.resume });
 });
 
 /* POST create a user */
@@ -21,7 +21,7 @@ router.post('/user/create', function(req, res, next) {
       username: req.body.username,
       password: req.body.password,
       conf: req.body.passwordConf,
-      resume: '{"max_height":864,"max_width":624,"default_block_height":216,"default_line_height":6,"minimum_block_width":96,"available_height":648,"rows":[[{"height":216,"width":624,"contents":"' + req.body.username + '\'s resume","isLine":false,"class":"none","alignment":"left"}]],"line_style":"solid"}',
+      resume: req.body.resume === "blank" ? '{"max_height":864,"max_width":624,"default_block_height":216,"default_line_height":6,"minimum_block_width":96,"available_height":648,"rows":[[{"height":216,"width":624,"contents":"' + req.body.username + '\'s resume","isLine":false,"class":"none","alignment":"left"}]],"line_style":"solid"}' : req.body.resume,
     }
     // insert data to mongo
     console.log("Adding user to DB...");

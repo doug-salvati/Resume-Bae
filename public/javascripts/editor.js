@@ -552,6 +552,14 @@ function initialize() {
         $.post("/editor/save", { resume: JSON.stringify(my_resume) });
     });
 
+    // Save resume before login submit
+    if ($('#signup').length) {
+        $('#signup').submit(function () {
+            my_resume.save();
+            $("input[name=resume]").val(JSON.stringify(my_resume));
+        });
+    }
+
 }
 
 function changeSelection() {

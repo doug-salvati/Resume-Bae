@@ -6,6 +6,8 @@ doctype html
 html
     body
         if (typeof(user) === 'undefined')
-            a(href="user", style="position: absolute; right: 15%;") Sign Up or Log In
+            form(action="user", method="post", id="signup")
+                input(type="hidden", name="resume", value="blank")
+                input(type="submit" style="position: absolute; right: 15%; top: 10px;" value="Sign Up or Log In to Save")
         else
             a(href="user/logout", style="position: absolute; right: 15%;") Logout #{user}
